@@ -34,7 +34,6 @@ CSequence::CSequence (size_t size, uint32_t tempo, uint32_t noteratio)
     m_noteratio = noteratio;
     m_lastplay = 0;
     m_cntnote = 0;
-    m_delnote = 0;
 }
 
 void CSequence::addNote (uint32_t time, uint8_t value, uint8_t velocity, uint16_t duration, uint8_t notechannel)
