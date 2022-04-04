@@ -25,7 +25,7 @@
 
 #include "sequence.h"
 
-#define DEFAULT_TTL 12
+#define DEFAULT_TTL 5
 
 CSequence::CSequence (size_t size, uint32_t tempo, uint32_t noteratio)
 {
