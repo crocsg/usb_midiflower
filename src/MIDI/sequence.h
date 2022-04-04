@@ -40,7 +40,9 @@ public:
     void addNote (uint32_t time, uint8_t value, uint8_t velocity, uint16_t duration, uint8_t notechannel);
     uint8_t play (uint32_t time, MIDImessage* mes);
     void check (uint32_t milli);
-
+    void clear (void);
+    void mute (int vel);
+    
     typedef enum _playmode
     {
         Learn,

@@ -111,6 +111,20 @@ uint8_t CSequence::play (uint32_t time, MIDImessage* mes)
 
 }
 
+void CSequence::clear (void)
+{
+    for (auto it = m_seq.begin () ; it != m_seq.end (); it++)
+        it->velocity = 0;
+    m_cntnote = 0;
+}
+
+void CSequence::mute (int vel)
+{
+    for (auto it = m_seq.begin () ; it != m_seq.end (); it++)
+        if (it->velocity > 0)
+            it->velocity = vel;
+    
+}
 uint8_t CSequence::play_learn (uint32_t time, MIDImessage* mes)
 {
     size_t pos = (time / m_tempo) % m_seq.size ();

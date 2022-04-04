@@ -59,6 +59,7 @@ CSequence D = CSequence(120, BPM, 35);
 std::vector<CSequence*> psequences;
 uint32_t sequence_time = 0;
 uint16_t sequence_index = 0;
+uint32_t last_sample_check = 0;
 
 #ifdef __cplusplus
 extern "C" {
@@ -68,10 +69,15 @@ void setup(void)
 {
 
 //MIDIpanic(); //dont panic, unless you are sure it is nessisary
+  A.clear ();
+  B.clear ();
+  C.clear ();
+  D.clear ();
   psequences.push_back(&A);
   psequences.push_back(&B);
   psequences.push_back(&C);
   psequences.push_back(&D);
+  last_sample_check =  millis ();
 
   //attachInterrupt(interruptPin, sample, RISING);  //begin sampling data from interrupt
   flower_sensor_init ();
@@ -113,6 +119,28 @@ void loop(void)
   //checkControl();
 
   flower_sensor_update_threshold ();
+  uint32_t last_samples = flower_sensor_get_last_sample_time_ms ();
+  if (currentMillis - last_sample_check >= 1000)
+  {
+    if (currentMillis - last_samples > 15000)
+    {
+        psequences[2]->mute (80);
+        psequences[3]->clear ();
+    }
+    if (currentMillis - last_samples > 45000)
+    {
+        psequences[0]->mute (75);
+        psequences[1]->clear ();
+        psequences[2]->clear ();
+        psequences[3]->clear ();
+    }
+    if (currentMillis - last_samples > 75000)
+    {
+        psequences[0]->clear ();
+    }
+
+    last_sample_check = currentMillis;
+  }
 
   if (psequences[0]->getnbnotes () > 15)
     flower_sensor_set_analyse_short (0);
@@ -158,3 +186,4 @@ void MIDIpanic()
 
 
 }
+

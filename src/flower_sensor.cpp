@@ -33,26 +33,27 @@
 #include "flower_sensor.h"
 #include "HARD/led.h"
 
-#define DESIRED_EVENT 12
+#define DESIRED_EVENT 24
 
 flower_sensor_callback _setnote;
 
 
 
-static uint8_t _samplesize = SAMPLESIZE / 2; //set sample array size
-static uint8_t state;
+static uint8_t  _samplesize = SAMPLESIZE / 2; //set sample array size
+static uint8_t  state;
 volatile uint32_t _microseconds = 0; //sampling timer
-volatile uint8_t _sindex = 0;
+volatile uint8_t  _sindex = 0;
 volatile uint32_t _samples[SAMPLESIZE];
+volatile uint32_t _last_samples = 0;
 uint8_t channel = 1;  //setting channel to 11 or 12 often helps simply computer midi routing setups
 uint8_t noteMin = 36; //C2  - keyboard note minimum
 uint8_t noteMax = 96; //C7  - keyboard note maximum
 
 float threshold = 1;  //change threshold multiplier
-float threshMin = 1.61; //scaling threshold min
-float threshMax = 3.71; //scaling threshold max
+float threshMin =  0.001; //scaling threshold min
+float threshMax = 15; //scaling threshold max
 
-uint32_t threshold_last_millis = 0;
+uint32_t  threshold_last_millis = 0;
 uint32_t  threshold_evt = 0;
 
 //******************************
@@ -76,16 +77,17 @@ extern "C" {
         _microseconds = now;
         _sindex += 1;
     }
-
+    _last_samples = millis ();
     state++;
     //led_signal_led_toggle ();
   }
 }
+
 void flower_sensor_init ()
 {
 
   led_signal_led_on();
-
+  _last_samples = millis ();
   gpio_hal_enable_interrupt (GPIO_FLOWER_SENSOR, flower_sensor_interrupt);
 
 }
@@ -116,12 +118,12 @@ void flower_sensor_update_threshold (void)
 
       if (threshold_evt < DESIRED_EVENT)
       {
-        if (threshold > 0.001)
+        if (threshold > threshMin)
           threshold /= 1.4;
       }
       else
       {
-        if (threshold < 15)
+        if (threshold < threshMax)
           threshold *= 1.4;
       }
       threshold_last_millis = currentMillis;
@@ -142,15 +144,20 @@ int scaleSearch(int note, int scale[], int scalesize) {
 
 
 int scaleNote(int note, int scale[], int root) {
-  //input note mod 12 for scaling, note/12 octave
-  //search array for nearest note, return scaled*octave
-  int scaled = note%12;
-  int octave = note/12;
-  int scalesize = (scale[0]);
-  //search entire array and return closest scaled note
-  scaled = scaleSearch(scaled, scale, scalesize);
-  scaled = (scaled + (12 * octave)) + root; //apply octave and root
-  return scaled;
+//input note mod 12 for scaling, note/12 octave
+//search array for nearest note, return scaled*octave
+int scaled = note%12;
+int octave = note/12;
+int scalesize = (scale[0]);
+//search entire array and return closest scaled note
+scaled = scaleSearch(scaled, scale, scalesize);
+scaled = (scaled + (12 * octave)) + root; //apply octave and root
+return scaled;
+}
+
+uint32_t flower_sensor_get_last_sample_time_ms (void)
+{
+  return _last_samples;
 }
 
 void flower_sensor_analyzeSample(void)
@@ -196,14 +203,15 @@ void flower_sensor_analyzeSample(void)
     //Serial.printf("%ld %ld %ld %ld %f %f\r\n", minim, maxim, averg, delta, stdevi, stdevi * threshold);
 
     //**********perform change detection
-    if (delta > (stdevi * threshold)){
+    if (delta > (stdevi * threshold))
+    {
       change = 1;
       threshold_evt ++;
-
     }
     //*********
 
-    if(change){// set note and control vector
+    if(change)
+    {// set note and control vector
         int dur = 100+(map(delta%127,1,127,100,1000)); //length of note
         int ramp = 3 + (dur%100) ; //control slide rate, min 25 (or 3 ;)
 
