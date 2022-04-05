@@ -28,8 +28,8 @@
 #include <stddef.h>
 #include <string.h>
 #include "pico/stdlib.h"
-#include "bsp/board.h"
-#include "../TOOLS/utils.h"
+
+#include "TOOLS/utils.h"
 #include "gpio_hal.h"
 
 #include "board.h"

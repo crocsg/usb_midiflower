@@ -11,6 +11,7 @@ extern "C" {
 
 void led_hal_init (void)
 {
+  gpio_init(SIGNAL_LED);
   gpio_set_dir(SIGNAL_LED, GPIO_OUT);
 }
 
