@@ -29,6 +29,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+
 typedef void(* hal_timer_callback) (void);
 
 void timer_hal_init ();

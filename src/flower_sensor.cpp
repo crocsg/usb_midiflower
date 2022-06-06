@@ -33,6 +33,7 @@
 #include "flower_sensor.h"
 #include "HARD/led.h"
 #include "HARD/pwm.h"
+#include "flower_activity.h"
 
 #define DESIRED_EVENT 24
 #define SAMPLESIZE    32
@@ -101,8 +102,9 @@ extern "C" {
     }
     _last_samples = millis ();
     state++;
-    //led_signal_led_toggle ();
-    pwm_activity_level (_activity_val[(_activity_id++ % ARRAYLEN(_activity_val))]);
+    
+    //pwm_activity_level (_activity_val[(_activity_id++ % ARRAYLEN(_activity_val))]);
+    flower_activity_signal_event ();
   }
 }
 

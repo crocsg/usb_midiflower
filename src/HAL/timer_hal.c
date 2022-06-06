@@ -24,6 +24,7 @@
  */
 
 #include <stdint.h>
+#include <string.h>
 #include "timer_hal.h"
 #include "pico/stdlib.h"
 
@@ -36,7 +37,7 @@ static  hal_timer_callback _tcbks = NULL;
 bool periodic_timer_callback(struct repeating_timer *t) {
     
     if (_tcbks)
-        *_tcbks();
+        (*_tcbks)();
     return true;
 }
 void timer_hal_init ()
@@ -45,7 +46,9 @@ void timer_hal_init ()
 }
 void timer_hal_add_timer_callback (uint32_t delay, hal_timer_callback tcbk)
 {
+     _tcbks = tcbk;
      add_repeating_timer_ms(delay, periodic_timer_callback, NULL, &_timer);
+     
 }
 
 #ifdef __cplusplus

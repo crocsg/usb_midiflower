@@ -22,76 +22,18 @@
  * THE SOFTWARE.
  *
  */
-
-#include <stdio.h>
-#include <stdlib.h>
-#include "pico/stdlib.h"
-#include "bsp/board.h"
-#include "tusb.h"
-#include "usb_midiflower.h"
-#include "HARD/led.h"
-#include "gpio_hal.h"
-#include "HARD/pwm.h"
-#include "flower_activity.h"
+#ifndef __FLOWER_ACTIVITY_H
+#define __FLOWER_ACTIVITY_H
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-/*
-void midi_task(void)
-{
-    static bool sysex = false;
-    uint8_t msg[3];
-    int n_data;
-
-    while(n_data = tud_midi_n_available(0, 0)) {
-	msg[0] = 0; msg[1] = 0; msg[2] = 0;
-	if (n_data = tud_midi_n_stream_read(0, 0, msg, 3)) {
-
-	    printf(" | ");
-
-	    if (sysex) {
-		printf("       |           : ");
-		for (int i = 0; i < 3; i++) {
-		    printf("%02x ", msg[i]);
-		    if (msg[i] == 0xf7) {
-			sysex = false;
-			break;
-		    }
-		}
-		printf("\n");
-	    } else {
-		sysex = (msg[0] == 0xf0);
-
-	    }
-	}
-    }
-}
-*/
-
-int main() {
-
-    board_init();
-    tusb_init();
-    stdio_init_all();
-    gpio_hal_init ();
-    led_init ();    
-    pwm_init ();
-    flower_activity_init ();
-    sleep_ms(100);
-
-    setup();
-    while (true)
-    {
-        tud_task();
-        //midi_task();
-        loop ();
-    }
-
-    return 0;
-}
+void flower_activity_init ();
+void flower_activity_signal_event ();
 
 #ifdef __cplusplus
 }
 #endif
+
+#endif // __FLOWER_ACTIVITY_H
