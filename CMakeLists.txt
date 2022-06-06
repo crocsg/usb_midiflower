@@ -24,6 +24,7 @@ target_include_directories(usb-midiflower PRIVATE
     ${CMAKE_CURRENT_LIST_DIR}/src
     ${CMAKE_CURRENT_LIST_DIR}/src/HAL
     ${CMAKE_CURRENT_LIST_DIR}/src/BOARD
+    ${CMAKE_CURRENT_LIST_DIR}/src/HARD
   )
 
 

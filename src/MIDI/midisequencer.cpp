@@ -28,17 +28,18 @@
 #include "midi.h"
 #include "led_hal.h"
 
-
 CMidiSequencer::CMidiSequencer (uint32_t size)
 {
     m_playingnotes.resize (size);
+    
 }
+
 void CMidiSequencer::Play (uint32_t time, MIDImessage* midi)
 {
-
+    
     midiSerial(144, midi->channel, midi->value, midi->velocity);
 
-    // find a room
+    // find a room to store midi message
     for (auto pMidi = m_playingnotes.begin(); pMidi != m_playingnotes.end (); pMidi++)
     {
         if (pMidi->velocity == 0)
@@ -56,12 +57,11 @@ void CMidiSequencer::Control (uint32_t time)
     {
         if (time - pMidi->time > pMidi->duration && pMidi->velocity != 0)
         {
-            midiSerial(128, pMidi->channel, pMidi->value, pMidi->velocity);
+            midiSerial(128, pMidi->channel, pMidi->value, pMidi->ramp);
             pMidi->velocity = 0;
         }
     }
 }
-
 
 void CMidiSequencer::midiSerial(int type, int channel, int data1, int data2)
 {

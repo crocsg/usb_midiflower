@@ -22,74 +22,25 @@
  * THE SOFTWARE.
  *
  */
+#include <stdint.h>
 
-#include <stdio.h>
-#include <stdlib.h>
-#include "pico/stdlib.h"
-#include "bsp/board.h"
-#include "tusb.h"
-#include "usb_midiflower.h"
-#include "HARD/led.h"
-#include "gpio_hal.h"
-#include "HARD/pwm.h"
-#ifdef __cplusplus
-extern "C" {
-#endif
+#include "pwm.h"
+#include "HAL/gpio_pwm_hal.h"
+#include "TOOLS/utils.h"
 
-/*
-void midi_task(void)
+void pwm_init (void)
 {
-    static bool sysex = false;
-    uint8_t msg[3];
-    int n_data;
-
-    while(n_data = tud_midi_n_available(0, 0)) {
-	msg[0] = 0; msg[1] = 0; msg[2] = 0;
-	if (n_data = tud_midi_n_stream_read(0, 0, msg, 3)) {
-
-	    printf(" | ");
-
-	    if (sysex) {
-		printf("       |           : ");
-		for (int i = 0; i < 3; i++) {
-		    printf("%02x ", msg[i]);
-		    if (msg[i] == 0xf7) {
-			sysex = false;
-			break;
-		    }
-		}
-		printf("\n");
-	    } else {
-		sysex = (msg[0] == 0xf0);
-
-	    }
-	}
-    }
+    gpio_pwm_hal_init ();
 }
-*/
+void pwm_activity_level (uint16_t level)
+{
+    gpio_pwm_hal_set_pwm (PWM_OUT_1, level);
+}
 
-int main() {
-
-    board_init();
-    tusb_init();
-    stdio_init_all();
-    gpio_hal_init ();
-    led_init ();    
-    pwm_init ();
-
-    sleep_ms(100);
-
-    setup();
-    while (true)
+void pwm_all_off (void)
+{
+    for (uint8_t i = 0; i < ARRAYLEN(board_pwm); i++)
     {
-        tud_task();
-        //midi_task();
-        loop ();
+        gpio_pwm_hal_set_pwm (board_pwm[i].gpio, 0);
     }
-
-    return 0;
 }
-
-#ifdef __cplusplus
-}
-#endif

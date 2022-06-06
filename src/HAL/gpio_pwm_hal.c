@@ -22,72 +22,43 @@
  * THE SOFTWARE.
  *
  */
+#include "hardware/pwm.h"
+#include "hardware/gpio.h"
+#include "board.h"
+#include "gpio_pwm_hal.h"
+#include "TOOLS/utils.h"
 
-#include <stdio.h>
-#include <stdlib.h>
-#include "pico/stdlib.h"
-#include "bsp/board.h"
-#include "tusb.h"
-#include "usb_midiflower.h"
-#include "HARD/led.h"
-#include "gpio_hal.h"
-#include "HARD/pwm.h"
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-/*
-void midi_task(void)
+gpio_pwm board_pwm[PWM_OUT_NBR] = {
+    { PWM_OUT_1, 2},
+    
+};
+
+
+
+void gpio_pwm_hal_init (void)
 {
-    static bool sysex = false;
-    uint8_t msg[3];
-    int n_data;
-
-    while(n_data = tud_midi_n_available(0, 0)) {
-	msg[0] = 0; msg[1] = 0; msg[2] = 0;
-	if (n_data = tud_midi_n_stream_read(0, 0, msg, 3)) {
-
-	    printf(" | ");
-
-	    if (sysex) {
-		printf("       |           : ");
-		for (int i = 0; i < 3; i++) {
-		    printf("%02x ", msg[i]);
-		    if (msg[i] == 0xf7) {
-			sysex = false;
-			break;
-		    }
-		}
-		printf("\n");
-	    } else {
-		sysex = (msg[0] == 0xf0);
-
-	    }
-	}
+    for (uint8_t i = 0; i < ARRAYLEN(board_pwm); i++)
+    {
+        gpio_set_function(board_pwm[i].gpio, GPIO_FUNC_PWM);
+      
+        // Set period of 65536 cycles (0 to 65535 inclusive)
+        pwm_set_wrap(pwm_gpio_to_slice_num(board_pwm[i].gpio), 65535);
+	  
+	    // define global level to 0
+        pwm_set_chan_level(pwm_gpio_to_slice_num(board_pwm[i].gpio), pwm_gpio_to_channel(board_pwm[i].gpio) , 0);
+      
+	    // enable pwm
+	    pwm_set_enabled(pwm_gpio_to_slice_num(board_pwm[i].gpio), true);
     }
 }
-*/
 
-int main() {
-
-    board_init();
-    tusb_init();
-    stdio_init_all();
-    gpio_hal_init ();
-    led_init ();    
-    pwm_init ();
-
-    sleep_ms(100);
-
-    setup();
-    while (true)
-    {
-        tud_task();
-        //midi_task();
-        loop ();
-    }
-
-    return 0;
+void gpio_pwm_hal_set_pwm (uint8_t gpio_pwm_id, uint16_t pwmval)
+{
+    pwm_set_gpio_level (board_pwm[gpio_pwm_id].gpio, pwmval);
 }
 
 #ifdef __cplusplus

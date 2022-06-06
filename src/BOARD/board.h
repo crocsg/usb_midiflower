@@ -23,16 +23,32 @@
  *
  */
 
-
-
-
 #ifndef __BOARD_H
 #define __BOARD_H
 
-#define GPIO_FLOWER_SENSOR  14
+#define GPIO_FLOWER_SENSOR 14
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-#define SAMPLESIZE  48
+    typedef enum
+    {
+        PWM_OUT_1,
+        PWM_OUT_NBR,
+    } gpio_pwm_id;
 
-#define SIGNAL_LED  25
+    typedef struct _gpio_pwm
+    {
+        gpio_pwm_id id;
+        uint8_t gpio;
+
+    } gpio_pwm;
+
+    extern gpio_pwm board_pwm[PWM_OUT_NBR];
+#ifdef __cplusplus
+}
+#endif
+
+#define SIGNAL_LED 25
 
 #endif // __BOARD_H

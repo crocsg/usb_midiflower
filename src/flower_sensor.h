@@ -27,14 +27,15 @@
 #ifndef __FLOWER_SENSOR
 #define __FLOWER_SENSOR
 
-typedef void(* flower_sensor_callback) (int value, int velocity, long duration, int notechannel, int ramp);
+typedef void(* flower_sensor_callback_mes) (uint32_t min, uint32_t max, uint32_t averg, uint32_t delta, float stdevi, float stdevical);
 
-void flower_sensor_init ();
-void flower_sensor_set_callback (flower_sensor_callback clbk);
+void flower_sensor_init (int pin);
+void flower_sensor_set_callback (flower_sensor_callback_mes clbk);
 void flower_sensor_analyzeSample(void);
 uint8_t flower_sensor_data_available (void);
 void flower_sensor_set_analyse_short (uint8_t s);
 void flower_sensor_update_threshold (void);
 uint32_t flower_sensor_get_last_sample_time_ms (void);
+void flower_sensor_build_mes ();
 
 #endif // __FLOWER_SENSOR

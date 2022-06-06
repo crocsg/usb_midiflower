@@ -30,14 +30,14 @@
 #include <cstdint>
 
 typedef struct _MIDImessage { //build structure for Note and Control MIDImessages
-  unsigned int type;
-  uint8_t value;
-  uint8_t velocity;
-  uint32_t duration;
-  uint32_t period;
-  uint8_t channel;
-  uint32_t time;
-  uint32_t ttl;
+  uint8_t   type;
+  uint8_t   value;
+  uint8_t   velocity;
+  uint32_t  duration;
+  uint16_t  ramp;
+  uint32_t  period;
+  uint8_t   channel;
+  uint32_t  time;
 } MIDImessage;
 
 #endif

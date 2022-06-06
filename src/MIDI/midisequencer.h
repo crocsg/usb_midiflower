@@ -38,12 +38,15 @@ class CMidiSequencer
 {
 public:
     CMidiSequencer (uint32_t size);
+    
     void Play (uint32_t time, MIDImessage* midi);
 
     void Control (uint32_t time);
-private:
+    
     void midiSerial(int type, int channel, int data1, int data2);
+private:
+    
 
-    std::vector<MIDImessage> m_playingnotes;
+    std::vector<MIDImessage> m_playingnotes;    
 };
 #endif

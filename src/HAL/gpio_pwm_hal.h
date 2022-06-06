@@ -23,73 +23,24 @@
  *
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include "pico/stdlib.h"
-#include "bsp/board.h"
-#include "tusb.h"
-#include "usb_midiflower.h"
-#include "HARD/led.h"
-#include "gpio_hal.h"
-#include "HARD/pwm.h"
+
+#ifndef __GPIO__PWM_HAL_H
+#define __GPIO_PWM_HAL_H
+
+#include "board.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-/*
-void midi_task(void)
-{
-    static bool sysex = false;
-    uint8_t msg[3];
-    int n_data;
 
-    while(n_data = tud_midi_n_available(0, 0)) {
-	msg[0] = 0; msg[1] = 0; msg[2] = 0;
-	if (n_data = tud_midi_n_stream_read(0, 0, msg, 3)) {
 
-	    printf(" | ");
-
-	    if (sysex) {
-		printf("       |           : ");
-		for (int i = 0; i < 3; i++) {
-		    printf("%02x ", msg[i]);
-		    if (msg[i] == 0xf7) {
-			sysex = false;
-			break;
-		    }
-		}
-		printf("\n");
-	    } else {
-		sysex = (msg[0] == 0xf0);
-
-	    }
-	}
-    }
-}
-*/
-
-int main() {
-
-    board_init();
-    tusb_init();
-    stdio_init_all();
-    gpio_hal_init ();
-    led_init ();    
-    pwm_init ();
-
-    sleep_ms(100);
-
-    setup();
-    while (true)
-    {
-        tud_task();
-        //midi_task();
-        loop ();
-    }
-
-    return 0;
-}
+void gpio_pwm_hal_init ();
+void gpio_pwm_hal_config_pin (uint8_t gpio);
+void gpio_pwm_hal_set_pwm (gpio_pwm_id gpio, uint16_t pwmval);
 
 #ifdef __cplusplus
 }
+#endif
+
 #endif
