@@ -22,36 +22,32 @@
  * THE SOFTWARE.
  *
  */
-#ifndef __LED_HAL_H
-#define __LED_HAL_H
 
+#include <stdint.h>
+#include "timer_hal.h"
 #include "pico/stdlib.h"
-#include "bsp/board.h"
-#include "board.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-
-void led_hal_init (void);
-__attribute__((always_inline)) extern inline void led_hal_signal_led_on (void)
-{
-  gpio_put(SIGNAL_LED,1);
+static  struct repeating_timer _timer;
+static  hal_timer_callback _tcbks = NULL;
+bool periodic_timer_callback(struct repeating_timer *t) {
+    
+    if (_tcbks)
+        *_tcbks();
+    return true;
 }
-
-__attribute__((always_inline)) extern inline void led_hal_signal_led_off (void)
+void timer_hal_init ()
 {
-  gpio_put(SIGNAL_LED,0);
+    memset (&_timer, 0, sizeof(_timer));
 }
-
-__attribute__((always_inline)) extern inline void led_hal_signal_led_toggle (void)
+void timer_hal_add_timer_callback (uint32_t delay, hal_timer_callback tcbk)
 {
-  gpio_put(SIGNAL_LED, gpio_get_out_level (SIGNAL_LED) == 0 ? 1 : 0);
+     add_repeating_timer_ms(delay, periodic_timer_callback, NULL, &_timer);
 }
-
 
 #ifdef __cplusplus
 }
 #endif
-#endif // __LED_HAL_H
