@@ -33,6 +33,7 @@
 #include "gpio_hal.h"
 #include "HARD/pwm.h"
 #include "flower_activity.h"
+#include "usb_lwip.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -79,12 +80,14 @@ int main() {
     led_init ();    
     pwm_init ();
     flower_activity_init ();
+    network_init ();
     sleep_ms(100);
 
     setup();
     while (true)
     {
         tud_task();
+        service_traffic();
         //midi_task();
         loop ();
     }

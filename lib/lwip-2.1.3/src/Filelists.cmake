@@ -30,6 +30,8 @@ else ("${LWIP_VERSION_RC}" STREQUAL "LWIP_RC_RELEASE")
     )
 endif ("${LWIP_VERSION_RC}" STREQUAL "LWIP_RC_RELEASE")
 
+message(STATUS "lwip includes files : ${LWIP_INCLUDE_DIRS}")
+
 # The minimum set of files needed for lwIP.
 set(lwipcore_SRCS
     ${LWIP_DIR}/src/core/init.c

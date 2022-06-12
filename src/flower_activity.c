@@ -129,7 +129,7 @@ static void flower_timer_callback (void)
         default:
         _state = STOP;
     }
-    led_signal_led_toggle ();
+    
 }
 
 void flower_activity_init ()
@@ -140,6 +140,7 @@ void flower_activity_init ()
 
 void flower_activity_signal_event ()
 {
+    led_signal_led_toggle ();
     if (_state == STOP)
         _state = START;
 }

@@ -47,7 +47,7 @@ extern "C" {
 #endif
 
 #ifndef CFG_TUSB_OS
-#define CFG_TUSB_OS                 OPT_OS_PICO
+#define CFG_TUSB_OS                 OPT_OS_NONE
 #endif
 
 // CFG_TUSB_DEBUG is defined by compiler in DEBUG build
@@ -82,10 +82,15 @@ extern "C" {
 #define CFG_TUD_HID             0
 #define CFG_TUD_MIDI            1
 #define CFG_TUD_VENDOR          0
+#define CFG_TUD_ECM_RNDIS       1
 
 // MIDI FIFO size of TX and RX
 #define CFG_TUD_MIDI_RX_BUFSIZE   (TUD_OPT_HIGH_SPEED ? 512 : 64)
 #define CFG_TUD_MIDI_TX_BUFSIZE   (TUD_OPT_HIGH_SPEED ? 512 : 64)
+
+// NET FIFO size of TX and RX
+#define CFG_TUD_NET_RX_BUFSIZE   (TUD_OPT_HIGH_SPEED ? 512 : 64)
+#define CFG_TUD_NET_TX_BUFSIZE   (TUD_OPT_HIGH_SPEED ? 512 : 64)
 
 #ifdef __cplusplus
 }

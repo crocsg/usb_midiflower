@@ -33,7 +33,18 @@
  */
 #define _PID_MAP(itf, n)  ( (CFG_TUD_##itf) << (n) )
 #define USB_PID           (0x4000 | _PID_MAP(CDC, 0) | _PID_MAP(MSC, 1) | _PID_MAP(HID, 2) | \
-                           _PID_MAP(MIDI, 3) | _PID_MAP(VENDOR, 4) )
+                           _PID_MAP(MIDI, 3) | _PID_MAP(VENDOR, 4)  | _PID_MAP(ECM_RNDIS, 5) )
+
+enum
+{
+  STRID_LANGID = 0,
+  STRID_MANUFACTURER,
+  STRID_PRODUCT,
+  STRID_SERIAL,
+  STRID_INTERFACE1,
+  STRID_INTERFACE2,
+  STRID_MAC,
+};
 
 //--------------------------------------------------------------------+
 // Device Descriptors
@@ -52,9 +63,9 @@ tusb_desc_device_t const desc_device =
     .idProduct          = USB_PID,
     .bcdDevice          = 0x0100,
 
-    .iManufacturer      = 0x01,
-    .iProduct           = 0x02,
-    .iSerialNumber      = 0x03,
+    .iManufacturer      = STRID_MANUFACTURER,
+    .iProduct           = STRID_PRODUCT,
+    .iSerialNumber      = STRID_SERIAL,
 
     .bNumConfigurations = 0x01
 };
@@ -73,46 +84,74 @@ uint8_t const * tud_descriptor_device_cb(void)
 
 enum
 {
-  ITF_NUM_MIDI = 0,
+  ITF_NUM_CDC = 0,
+  ITF_NUM_CDC_DATA,
+  ITF_NUM_MIDI = 2,
   ITF_NUM_MIDI_STREAMING,
   ITF_NUM_TOTAL
 };
 
-#define CONFIG_TOTAL_LEN  (TUD_CONFIG_DESC_LEN + TUD_MIDI_DESC_LEN)
+#define MIDI_CONFIG_TOTAL_LEN  (TUD_CONFIG_DESC_LEN + TUD_MIDI_DESC_LEN)
+#define MAIN_CONFIG_TOTAL_LEN    (TUD_CONFIG_DESC_LEN + TUD_RNDIS_DESC_LEN + TUD_MIDI_DESC_LEN)
+#define ALT_CONFIG_TOTAL_LEN     (TUD_CONFIG_DESC_LEN + TUD_CDC_ECM_DESC_LEN + TUD_MIDI_DESC_LEN)
 
-#if CFG_TUSB_MCU == OPT_MCU_LPC175X_6X || CFG_TUSB_MCU == OPT_MCU_LPC177X_8X || CFG_TUSB_MCU == OPT_MCU_LPC40XX
-  // LPC 17xx and 40xx endpoint type (bulk/interrupt/iso) are fixed by its number
-  // 0 control, 1 In, 2 Bulk, 3 Iso, 4 In etc ...
-  #define EPNUM_MIDI   0x02
-#else
-  #define EPNUM_MIDI   0x01
-#endif
 
-uint8_t const desc_fs_configuration[] =
+
+enum
 {
-  // Config number, interface count, string index, total length, attribute, power in mA
-  TUD_CONFIG_DESCRIPTOR(1, ITF_NUM_TOTAL, 0, CONFIG_TOTAL_LEN, TUSB_DESC_CONFIG_ATT_REMOTE_WAKEUP, 100),
 
-  // Interface number, string index, EP Out & EP In address, EP size
+  CONFIG_ID_RNDIS = 0,
+  CONFIG_ID_ECM   = 1,
+
+  CONFIG_ID_COUNT
+};
+
+#define EPNUM_NET_NOTIF   0x81
+#define EPNUM_NET_OUT     0x02
+#define EPNUM_NET_IN      0x82
+#define EPNUM_MIDI        0x03
+
+static uint8_t const rndis_configuration[] =
+{
+  // Config number (index+1), interface count, string index, total length, attribute, power in mA
+  TUD_CONFIG_DESCRIPTOR(CONFIG_ID_RNDIS+1, ITF_NUM_TOTAL, 0, MAIN_CONFIG_TOTAL_LEN, 0, 100),
+
+  // Interface number, string index, EP notification address and size, EP data address (out, in) and size.
+  TUD_RNDIS_DESCRIPTOR(ITF_NUM_CDC, STRID_INTERFACE1, EPNUM_NET_NOTIF, 8, EPNUM_NET_OUT, EPNUM_NET_IN, CFG_TUD_NET_ENDPOINT_SIZE),
   TUD_MIDI_DESCRIPTOR(ITF_NUM_MIDI, 0, EPNUM_MIDI, 0x80 | EPNUM_MIDI, 64)
-
-
-
 };
 
-#if TUD_OPT_HIGH_SPEED
-uint8_t const desc_hs_configuration[] =
+static uint8_t const ecm_configuration[] =
 {
-  // Config number, interface count, string index, total length, attribute, power in mA
-  TUD_CONFIG_DESCRIPTOR(1, ITF_NUM_TOTAL, 0, CONFIG_TOTAL_LEN, TUSB_DESC_CONFIG_ATT_REMOTE_WAKEUP, 100),
+  // Config number (index+1), interface count, string index, total length, attribute, power in mA
+  TUD_CONFIG_DESCRIPTOR(CONFIG_ID_ECM+1, ITF_NUM_TOTAL, 0, ALT_CONFIG_TOTAL_LEN, 0, 100),
 
-  // Interface number, string index, EP Out & EP In address, EP size
-  TUD_MIDI_DESCRIPTOR(ITF_NUM_MIDI, 0, EPNUM_MIDI, 0x80 | EPNUM_MIDI, 512)
-
-  //TUD_CDC_DESCRIPTOR(ITF_NUM_CDC_0, 4, EPNUM_CDC_0_NOTIF, 8, EPNUM_CDC_0_OUT, EPNUM_CDC_0_IN, 512),
+  // Interface number, description string index, MAC address string index, EP notification address and size, EP data address (out, in), and size, max segment size.
+  TUD_CDC_ECM_DESCRIPTOR(ITF_NUM_CDC, STRID_INTERFACE1, STRID_MAC, EPNUM_NET_NOTIF, 64, EPNUM_NET_OUT, EPNUM_NET_IN, CFG_TUD_NET_ENDPOINT_SIZE, CFG_TUD_NET_MTU),
+  TUD_MIDI_DESCRIPTOR(ITF_NUM_MIDI, 0, EPNUM_MIDI, 0x80 | EPNUM_MIDI, 64),
 };
-#endif
 
+// Configuration array: RNDIS and CDC-ECM
+// - Windows only works with RNDIS
+// - MacOS only works with CDC-ECM
+// - Linux will work on both
+static uint8_t const * const configuration_arr[2] =
+{
+
+  [CONFIG_ID_RNDIS] = rndis_configuration,
+  [CONFIG_ID_ECM  ] = ecm_configuration
+
+};
+
+
+// Invoked when received GET CONFIGURATION DESCRIPTOR
+// Application return pointer to descriptor
+// Descriptor contents must exist long enough for transfer to complete
+uint8_t const * tud_descriptor_configuration_cb(uint8_t index)
+{
+  return (index < CONFIG_ID_COUNT) ? configuration_arr[index] : NULL;
+}
+/*
 // Invoked when received GET CONFIGURATION DESCRIPTOR
 // Application return pointer to descriptor
 // Descriptor contents must exist long enough for transfer to complete
@@ -127,11 +166,11 @@ uint8_t const * tud_descriptor_configuration_cb(uint8_t index)
   return desc_fs_configuration;
 #endif
 }
-
+*/
 //--------------------------------------------------------------------+
 // String Descriptors
 //--------------------------------------------------------------------+
-
+/*
 // array of pointer to string descriptors
 char const* string_desc_arr [] =
 {
@@ -141,7 +180,19 @@ char const* string_desc_arr [] =
   "123456",                      // 3: Serials, should use chip ID
 
 };
+*/
+// array of pointer to string descriptors
+static char const* string_desc_arr [] =
+{
+  [STRID_LANGID]        = (const char[]) { 0x09, 0x04 }, // supported language is English (0x0409)
+  [STRID_MANUFACTURER]  = "TinyUSB",                     // Manufacturer
+  [STRID_PRODUCT]       = "TinyUSB Net Midi Flower",     // Product
+  [STRID_SERIAL]        = "123456",                      // Serial
+  [STRID_INTERFACE1]    = "TinyUSB Network Interface",    // Interface Description
+  [STRID_INTERFACE2]    = "TinyUSB Midi Interface"    // Interface Description
 
+  // STRID_MAC index is handled separately
+};
 static uint16_t _desc_str[32];
 
 // Invoked when received GET STRING DESCRIPTOR request

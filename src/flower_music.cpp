@@ -36,13 +36,13 @@ uint32_t last_sample_check = millis ();
 
 
 // definition des tempos
-#define BPM60 ((60 * 1000) / 60)
-#define BPM90 ((60 * 1000) / 90)
-#define BPM120 ((60 * 1000) / 120)
-#define BPM160 ((60 * 1000) / 160)
-#define BPM BPM120
+//#define BPM60 ((60 * 1000) / 60)
+//#define BPM90 ((60 * 1000) / 90)
+//#define BPM120 ((60 * 1000) / 120)
+//#define BPM160 ((60 * 1000) / 160)
+//#define BPM BPM60
 
-#define BASE_BPM 120
+#define BASE_BPM 60
 
 // nombre maxi de notes midi simultanees dans le sequencer
 // max midi notes tracked in sequencer
@@ -54,7 +54,7 @@ CMidiFlowerSequencer sequencer = CMidiFlowerSequencer(MAX_MIDI_NOTES);
 
 // definition des "pistes" midi du tempo associé et du taux de remplissage max
 // define tracks with associated BPM and fill ratio
-CSequence midi_track_1 = CSequence(128, BASE_BPM, 1, 75);
+CSequence midi_track_1 = CSequence(128, BASE_BPM, 1, 100);
 CSequence midi_track_2 = CSequence(128, BASE_BPM, 1, 75);
 CSequence midi_track_3 = CSequence(128, BASE_BPM, 4, 75);
 CSequence midi_track_4 = CSequence(128, BASE_BPM, 1, 25);
@@ -85,10 +85,10 @@ const char* scalename[] =
   "Chromatic"
 };
 
-static uint8_t *scaleSelect = scaleMajor; //initialize scaling
-static uint8_t current_scale = 0;
+static uint8_t *scaleSelect = scalePentaMajor; //initialize scaling
+static uint8_t current_scale = 4;
 static uint16_t root = 4;       //initialize for root
-static uint8_t noteMin = 36; //24;   //C1  - keyboard note minimum
+static uint8_t noteMin = 36; //24;   //C2  - keyboard note minimum
 static uint8_t noteMax = 84+12;   //C6  - keyboard note maximum
 
 static uint32_t basebpm   = BASE_BPM;
@@ -102,6 +102,17 @@ void flower_music_init (void)
   sequencer.register_track(&midi_track_3);
   sequencer.register_track(&midi_track_4);
   
+  sequencer.set_track_size(0,32);
+  sequencer.set_track_mulbpm(0, 2);
+  sequencer.set_track_mulbpm(1, 1);
+  sequencer.set_track_size(1,32);
+  sequencer.set_track_mulbpm(2, 2);
+  sequencer.set_track_size(2,32);
+  sequencer.set_track_mulbpm(3, 1);
+  
+
+  sequencer.set_track_ratio(0, 100);
+
 }
 
 // Flower sensor measure callback. compute a note and pass it to midi sequencer
