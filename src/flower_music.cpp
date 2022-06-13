@@ -42,7 +42,7 @@ uint32_t last_sample_check = millis ();
 //#define BPM160 ((60 * 1000) / 160)
 //#define BPM BPM60
 
-#define BASE_BPM 60
+#define BASE_BPM 120
 
 // nombre maxi de notes midi simultanees dans le sequencer
 // max midi notes tracked in sequencer
@@ -71,6 +71,7 @@ uint8_t scalePentaMinor[FLOWER_MUSIC_SCALE_SIZE] =   {0,0, 3,3, 5,5, 7,7,7, 10,1
 uint8_t scaleBlues[FLOWER_MUSIC_SCALE_SIZE] =        {0,0, 3,3, 5,5, 6,6, 7,7, 10,10};
 
 uint8_t scaleChrom[FLOWER_MUSIC_SCALE_SIZE] =        {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
+uint8_t scaleDrum[FLOWER_MUSIC_SCALE_SIZE] =        {0, 0, 0, 0, 2, 2, 2, 2, 4, 4, 4, 4};
 
 
 const char* scalename[] = 
@@ -82,12 +83,13 @@ const char* scalename[] =
   "Pentatonic Major",
   "Pentatonic Minor",
   "Blues",
-  "Chromatic"
+  "Chromatic",
+  "Drum?"
 };
 
 static uint8_t *scaleSelect = scalePentaMajor; //initialize scaling
 static uint8_t current_scale = 4;
-static uint16_t root = 4;       //initialize for root
+static uint16_t root = 0;       //initialize for root
 static uint8_t noteMin = 36; //24;   //C2  - keyboard note minimum
 static uint8_t noteMax = 84+12;   //C6  - keyboard note maximum
 
@@ -105,10 +107,10 @@ void flower_music_init (void)
   sequencer.set_track_size(0,32);
   sequencer.set_track_mulbpm(0, 2);
   sequencer.set_track_mulbpm(1, 1);
-  sequencer.set_track_size(1,32);
-  sequencer.set_track_mulbpm(2, 2);
+  sequencer.set_track_size(1,64);
+  sequencer.set_track_mulbpm(2, 0);
   sequencer.set_track_size(2,32);
-  sequencer.set_track_mulbpm(3, 1);
+  sequencer.set_track_mulbpm(3, 0);
   
 
   sequencer.set_track_ratio(0, 100);
@@ -278,6 +280,9 @@ void flower_music_set_scale (uint8_t scale)
     case 7:
       scaleSelect = scaleChrom;
       break;        
+    case 8:
+      scaleSelect = scaleDrum;
+      break;          
     default:
       scaleSelect = scaleMajor;
       break;           

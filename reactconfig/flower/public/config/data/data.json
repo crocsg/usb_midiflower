@@ -1,0 +1,10 @@
+{
+    "mesures":[
+        {"id":1, "value":221},
+        {"id":2, "value":222},
+        {"id":3, "value":230},
+        {"id":4, "value":301},
+        {"id":5, "value":333},
+        {"id":6, "value":240}
+    ]
+}
