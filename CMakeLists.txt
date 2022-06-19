@@ -32,7 +32,7 @@ message(STATUS "MAKEFSDATA_BINARY_DIR: ${MAKEFSDATA_BINARY_DIR}")
 message(STATUS "***********************************************")
 
 add_custom_target (www 
-  
+    
     COMMAND  ${MAKEFSDATA_BINARY_DIR}/makefsdata.exe ${CMAKE_CURRENT_SOURCE_DIR}/www/fs -svr:MidiFlower -f:${CMAKE_CURRENT_SOURCE_DIR}/www/fsdata.c
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
    
@@ -46,7 +46,11 @@ project(usb-midiflower)
 pico_sdk_init()
 
 
-file(GLOB_RECURSE FILES src/*.c src/*.cpp src/*.h
+file(GLOB_RECURSE FILES 
+  src/*.c 
+  src/*.cpp 
+  src/*.h
+  src/HTTP/*.cpp
   
 )
 
@@ -61,6 +65,7 @@ set (LWIP_INCLUDE_DIRS
     "${LWIP_DIR}/src/include/lwip/apps"
     "${CMAKE_CURRENT_SOURCE_DIR}/src"
     "${CMAKE_CURRENT_SOURCE_DIR}/www"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/HTTP"
 )
 
 include(${LWIP_DIR}/src/Filelists.cmake)
@@ -106,6 +111,6 @@ target_link_libraries(usb-midiflower PRIVATE
   -Xlinker -print-memory-usage
   )
 pico_enable_stdio_usb(usb-midiflower 0)
-pico_enable_stdio_uart(usb-midiflower 0)
+pico_enable_stdio_uart(usb-midiflower 1)
 
 pico_add_extra_outputs(usb-midiflower)

@@ -45,6 +45,13 @@ extern "C" {
     } gpio_pwm;
 
     extern gpio_pwm board_pwm[PWM_OUT_NBR];
+
+#define DEBUG_UART_ENABLE   1
+#define DEBUG_UART  uart0
+#define DEBUG_UART_BAUDRATE 115200
+#define DEBUG_UART_TX   16
+#define DEBUG_UART_RX   17
+    
 #ifdef __cplusplus
 }
 #endif

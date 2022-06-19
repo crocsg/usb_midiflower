@@ -27,6 +27,21 @@
 #ifndef __FLOWER_SENSOR
 #define __FLOWER_SENSOR
 
+#include <deque>
+
+#ifdef __cpluplus
+extern "C" {
+#endif
+typedef struct _mes_data
+{
+    uint32_t time;
+    uint32_t data;
+} mes_data;
+#ifdef __cpluplus
+}
+#endif
+
+
 typedef void(* flower_sensor_callback_mes) (uint32_t min, uint32_t max, uint32_t averg, uint32_t delta, float stdevi, float stdevical);
 
 void flower_sensor_init (int pin);
@@ -37,5 +52,7 @@ void flower_sensor_set_analyse_short (uint8_t s);
 void flower_sensor_update_threshold (void);
 uint32_t flower_sensor_get_last_sample_time_ms (void);
 void flower_sensor_build_mes ();
+
+std::deque<mes_data>& flower_sensor_get_history (void);
 
 #endif // __FLOWER_SENSOR

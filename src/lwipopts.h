@@ -53,9 +53,12 @@
 
 #define ETHARP_SUPPORT_STATIC_ENTRIES   1
 
-#define LWIP_HTTPD_CGI                  0
+#define LWIP_HTTPD_CGI                  1
 #define LWIP_HTTPD_SSI                  1
 #define LWIP_HTTPD_SSI_INCLUDE_TAG      0
+#define LWIP_HTTPD_SSI_BY_FILE_EXTENSION 1
+
+
 #define MAKEFS_SUPPORT_DEFLATE          0
 
 #define LWIP_SINGLE_NETIF               1
@@ -68,5 +71,24 @@
 #define LWIP_BROADCAST_PING             1
 #define LWIP_IPV6_MLD                   0
 #define LWIP_IPV6_SEND_ROUTER_SOLICIT   0
+
+#define LWIP_DEBUG						LWIP_DBG_ON
+
+#define TCP_DEBUG                       LWIP_DBG_OFF
+#define ETHARP_DEBUG                    LWIP_DBG_OFF
+#define PBUF_DEBUG                      LWIP_DBG_OFF
+#define IP_DEBUG                        LWIP_DBG_OFF
+#define TCPIP_DEBUG                     LWIP_DBG_OFF
+#define DHCP_DEBUG                      LWIP_DBG_OFF
+#define UDP_DEBUG                       LWIP_DBG_OFF
+#define HTTPD_DEBUG         			LWIP_DBG_ON
+#define HTTP_DEV_DEBUG         			LWIP_DBG_ON
+#define HTTP_POST_DEBUG         		LWIP_DBG_ON
+#define HTTP_SSI_DEBUG         			LWIP_DBG_ON
+#define TCP_OUTPUT_DEBUG				LWIP_DBG_OFF
+#define MEMP_DEBUG						LWIP_DBG_OFF
+#define MEM_DEBUG                       LWIP_DBG_OFF
+
+
 
 #endif /* __LWIPOPTS_H__ */

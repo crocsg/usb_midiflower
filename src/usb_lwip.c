@@ -255,7 +255,7 @@ void network_init (void)
   while (!netif_is_up(&netif_data));
   while (dhserv_init(&dhcp_config) != ERR_OK);
   while (dnserv_init(IP_ADDR_ANY, 53, dns_query_proc) != ERR_OK);
-  httpd_init();
+  
 }
 
 /* lwip has provision for using a mutex, when applicable */

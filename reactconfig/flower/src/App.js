@@ -7,6 +7,8 @@ import Home from "./pages/Home";
 import Data from "./pages/Data";
 import Channels  from './pages/Channels';
 
+window.url_prefix = "";
+
 const App = props => {
   
   return (

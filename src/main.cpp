@@ -27,6 +27,7 @@
 #include <stdlib.h>
 #include "pico/stdlib.h"
 #include "bsp/board.h"
+#include "board.h"
 #include "tusb.h"
 #include "usb_midiflower.h"
 #include "HARD/led.h"
@@ -34,6 +35,7 @@
 #include "HARD/pwm.h"
 #include "flower_activity.h"
 #include "usb_lwip.h"
+#include "http_server.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -70,19 +72,29 @@ void midi_task(void)
     }
 }
 */
+#define PIN PICO_DEFAULT_UART_RX_PIN 
 
 int main() {
 
     board_init();
     tusb_init();
-    stdio_init_all();
+#if DEBUG_UART_ENABLE    
+    
+    stdio_uart_init_full(DEBUG_UART, 
+        DEBUG_UART_BAUDRATE,
+        DEBUG_UART_TX,
+        DEBUG_UART_RX);
+#endif
     gpio_hal_init ();
     led_init ();    
     pwm_init ();
     flower_activity_init ();
     network_init ();
+    http_server_init ();
     sleep_ms(100);
 
+    for (int i = 0; i < 10; i++)
+        printf ("yahoo\r\n");
     setup();
     while (true)
     {
@@ -90,6 +102,7 @@ int main() {
         service_traffic();
         //midi_task();
         loop ();
+        
     }
 
     return 0;

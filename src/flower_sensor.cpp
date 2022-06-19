@@ -27,6 +27,7 @@
 #include <cmath>
 #include <cstdint>
 
+
 #include "board.h"
 #include "TOOLS/utils.h"
 #include "gpio_hal.h"
@@ -37,17 +38,30 @@
 
 #define DESIRED_EVENT 24
 #define SAMPLESIZE    32
-#define MIN_DELTA     200
+#define MIN_DELTA     250
+
+#define FLOWER_MUSIC_HISTORY_SIZE 128
+
+static void update_history (uint32_t mestime, uint32_t minim, uint32_t maxim, uint32_t averg, uint32_t delta);
 
 static flower_sensor_callback_mes _setmes;
 
 
+std::deque<mes_data> history; 
+
+
+
+typedef struct _flower_sample
+{
+  uint32_t time;
+  uint32_t values[SAMPLESIZE];
+} flower_sample;
 
 static uint8_t      _samplesize = SAMPLESIZE / 2; //set sample array size
 static uint8_t      state;
 volatile uint32_t   _microseconds = 0; //sampling timer
 volatile uint8_t    _sindex = 0;
-volatile uint32_t   _samples[SAMPLESIZE];
+volatile flower_sample   _samples;
 volatile uint32_t   _last_samples = 0;
 
 float threshold   = 1;  //change threshold multiplier
@@ -96,7 +110,8 @@ extern "C" {
   {
     if(_sindex < _samplesize) {
         uint32_t now = micros();
-        _samples[_sindex] = now - _microseconds;
+        _samples.values[_sindex] = now - _microseconds;
+        _samples.time = millis ();
         _microseconds = now;
         _sindex += 1;
     }
@@ -115,6 +130,7 @@ void flower_sensor_init (int interruptPin)
   _last_samples = millis ();
   gpio_hal_enable_interrupt (interruptPin, flower_sensor_interrupt);
 
+  
 }
 
 uint8_t flower_sensor_data_available (void)
@@ -180,18 +196,19 @@ void flower_sensor_analyzeSample(void)
   float stdevi = 0;
   uint32_t delta = 0;
   uint8_t change = 0;
+  uint32_t mes_time;
 
   state++;
   if (_sindex >= _samplesize) { //array is full
     unsigned long sampanalysis[SAMPLESIZE];
     for (uint8_t i=0; i < _samplesize; i++){
       //skip first element in the array
-      sampanalysis[i] = _samples[i];  //load analysis table (due to volitle)
+      sampanalysis[i] = _samples.values[i];  //load analysis table (due to volitle)
       //manual calculation
       if(sampanalysis[i] > maxim) { maxim = sampanalysis[i]; }
       if(sampanalysis[i] < minim) { minim = sampanalysis[i]; }
       averg += sampanalysis[i];
-
+      
     }
     averg = averg / (_samplesize);
     for (uint8_t i = 0; i < _samplesize; i++)
@@ -223,9 +240,31 @@ void flower_sensor_analyzeSample(void)
     {
       //Serial.printf("%ld %ld %ld %ld %f %f\r\n", minim, maxim, averg, delta, stdevi, stdevi * threshold); 
       _setmes (minim, maxim, averg, delta, stdevi, stdevi * threshold);
+
     }
+
+    if (change)
+      update_history (_samples.time, minim, maxim, averg, delta);
     //reset array for next sample
      _sindex = 0;
 
   }
+}
+
+static void update_history (uint32_t mestime, uint32_t minim, uint32_t maxim, uint32_t averg, uint32_t delta)
+{
+  mes_data val = {
+    mestime,
+    averg
+  };
+
+  history.push_back (val);
+
+  while (history.size () > FLOWER_MUSIC_HISTORY_SIZE)
+    history.pop_front ();
+}
+
+std::deque<mes_data>& flower_sensor_get_history (void)
+{
+  return (history);
 }
