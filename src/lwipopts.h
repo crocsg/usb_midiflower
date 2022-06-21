@@ -57,7 +57,7 @@
 #define LWIP_HTTPD_SSI                  1
 #define LWIP_HTTPD_SSI_INCLUDE_TAG      0
 #define LWIP_HTTPD_SSI_BY_FILE_EXTENSION 1
-
+#define LWIP_HTTPD_SSI_MULTIPART    1
 
 #define MAKEFS_SUPPORT_DEFLATE          0
 
@@ -81,14 +81,14 @@
 #define TCPIP_DEBUG                     LWIP_DBG_OFF
 #define DHCP_DEBUG                      LWIP_DBG_OFF
 #define UDP_DEBUG                       LWIP_DBG_OFF
-#define HTTPD_DEBUG         			LWIP_DBG_ON
-#define HTTP_DEV_DEBUG         			LWIP_DBG_ON
-#define HTTP_POST_DEBUG         		LWIP_DBG_ON
-#define HTTP_SSI_DEBUG         			LWIP_DBG_ON
+#define HTTPD_DEBUG         			LWIP_DBG_OFF
+#define HTTP_DEV_DEBUG         			LWIP_DBG_OFF
+#define HTTP_POST_DEBUG         		LWIP_DBG_OFF
+#define HTTP_SSI_DEBUG         			LWIP_DBG_OFF
 #define TCP_OUTPUT_DEBUG				LWIP_DBG_OFF
 #define MEMP_DEBUG						LWIP_DBG_OFF
 #define MEM_DEBUG                       LWIP_DBG_OFF
 
-
+#define LWIP_HTTPD_MAX_TAG_INSERT_LEN 192
 
 #endif /* __LWIPOPTS_H__ */

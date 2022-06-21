@@ -128,11 +128,11 @@ void flower_music_init (void)
 void BuildNoteFromMeasure (uint32_t currentmillis, uint32_t min, uint32_t max, uint32_t averg, uint32_t delta, float stdevi, float stdevical)
 {
     uint16_t dur = 200+(map(delta%127,1,127,100,800));      //length of note derived from delta
-    uint16_t ramp = 3 + (dur%80) ; //control slide rate, min 25 (or 3 ;)
+    uint16_t ramp = 3 + (dur % 80) ; //control slide rate, min 25 (or 3 ;)
      
 
     //set scaling, root key, note
-    uint16_t note = map(averg%127,0,127,noteMin,noteMax);    //derive note from average measure
+    uint16_t note = map(averg % 127,0,127,noteMin,noteMax);    //derive note from average measure
     //note = scaleNote(note, scaleSelect, root);          //scale the note (force the note in selected scale)
     
     setNote(currentmillis, note, 100, dur, ramp);                            // add the note in some sequencer channels

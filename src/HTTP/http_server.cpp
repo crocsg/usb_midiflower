@@ -44,10 +44,6 @@ u16_t ssi_app_ssi_handler(
 #endif /* LWIP_HTTPD_SSI_MULTIPART */
                              )
 {
-#if LWIP_HTTPD_SSI_MULTIPART
-	(void) current_tag_part;
-	(void) next_tag_part;
-#endif
 	LWIP_DEBUGF(HTTP_SSI_DEBUG, ("SSI HANDLER\n"));
 	if (iIndex < ARRAYLEN(ssi_tags))
 	{
@@ -58,8 +54,10 @@ u16_t ssi_app_ssi_handler(
 
 	uint16_t printed = 0;
 	uint16_t pdata = 0;
-	uint16_t n = 0;
+	uint16_t n = current_tag_part;
   uint32_t starttime = 0;
+  uint32_t startdata = 0;
+  uint16_t i;
 
   switch (iIndex)
 	{
@@ -68,20 +66,26 @@ u16_t ssi_app_ssi_handler(
     std::deque<mes_data>& data =  flower_sensor_get_history ();
 
     if (data.size () > 0)
-      starttime = data[0].time;
-    for (auto it = data.begin(); it != data.end() && iInsertLen > 32; ++it)
     {
-      pdata = snprintf(&pcInsert[printed], iInsertLen, "%s{\"id\":%lu,\"value\":%lu}", 
+      starttime = data[0].time;
+      startdata = data[0].data;
+    }
+    uint16_t pos = current_tag_part * 4;  
+    for (i = pos; i < pos + 4 && iInsertLen > 32 && i < data.size () ; i++)
+    {
+      pdata = snprintf(&pcInsert[printed], iInsertLen, "%s{\"id\":%lu,\"value\":%ld}", 
              n == 0 ? "":",",
-             it->time - starttime,
-             it->data
+             i,
+             (int) ((int) data[i].data - (int) startdata)
              
             );
       n++;      
       printed += pdata;
       iInsertLen -= pdata;            
     }
-    
+    if (i < data.size ())
+      *next_tag_part = current_tag_part + 1;
+
     }
 		break;
 	case 1: // flowerdata

@@ -1,15 +1,7 @@
 {
     "mesures":[
-        
         <!--#flwdata-->
         <!--#curip-->
-        
-    ],
-    "test":[
-        {"id":1, "value":221},
-        {"id":2, "value":222},
-        {"id":3, "value":230}
-        
     ]
 
 }

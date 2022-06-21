@@ -19,7 +19,7 @@ const Layout = () => {
         <Link to="/data" className="App-link">
             Flower Data
         </Link>
-        <Link to="/data" className="App-link">
+        <Link to="/param" className="App-link">
             General parameters
         </Link>
         <Link to="/channels" className="App-link">
