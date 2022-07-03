@@ -16,13 +16,19 @@ export default class Parameters extends React.Component {
             bpms:[],
             bpm:[]
         };
-
+        
+        this.handleChangeScale = this.handleChangeScale.bind(this);
+        this.handleChangeNote = this.handleChangeNote.bind(this);
+        this.handleChangeBPM = this.handleChangeBPM.bind(this);
         
     }
     componentDidMount ()
     {
         this.loaddata();
     }
+
+
+
     loaddata ()
     {
         let url = window.url_prefix + '/config/param/paramdev.json';
@@ -58,18 +64,46 @@ export default class Parameters extends React.Component {
                 }
             )    
     }
-    render () {
-        return (
-        <Box color='white' bg='#293b25'>
+    
+    handleChangeScale = event => {
+        console.log ("changing scale");
+        this.setState ({scale:event.target.value});
+        console.log(event.target.value);
+        console.log("scale value");
+      };
+    
+    handleChangeNote = event => {
+    console.log ("changing note");
+    this.setState ({note:event.target.value});
+    console.log(event.target.value);
+    console.log("note value");
+    };
+    
+    handleChangeBPM = event => {
+        console.log ("changing bpm");
+        this.setState ({bpm:event.target.value});
+        console.log(event.target.value);
+        console.log("bpm value");
+        };
 
-            <h1>
-            Scale
-            </h1>
-            <Label htmlFor='scale'>Scales</Label>
+    render () {
+        //defaultValue={this.state.note}
+        console.log ("scale rendered", this.state.scale);
+        return (
+        <Box color='white' bg='#293b25a90' width={'100%'} >
+
+            
+            <Label htmlFor='scale'>Scale</Label>
             <Select
-                id='scale'
+                alignSelf={'center'}
+                
+                width={'50%'}
+                color='white' bg='#293b25'
+                id='idscale'
                 name='Scale'
-                defaultValue={this.state.scale}>
+                value={this.state.scale}
+                onChange={this.handleChangeScale}
+                >
                     {Object.entries(this.state.scales).map(([ key, scale ]) => (
                     <option
                         key={key}>
@@ -77,17 +111,44 @@ export default class Parameters extends React.Component {
                     </option>
                 ))}
             </Select>
-            <p>
-            {this.state.scales}
-            </p>
+            
 
-            <h1>
-            Root note      
-
-            </h1>
-            <h1>
-            BPM
-            </h1>
+            <Box  color='white' bg='#ff3b2590' width={'50%'} >
+            <Label htmlFor='note'>Root note</Label>
+            <Select
+            
+                width={'50%'}
+                color='white' bg='#293b25'
+                id='idnote'
+                name='Note'
+                value={this.state.note}
+                onChange={this.handleChangeNote}
+                >
+                    {Object.entries(this.state.notes).map(([ key, note ]) => (
+                    <option
+                        key={key}>
+                        {note}
+                    </option>
+                ))}
+            </Select>
+            </Box>
+            <Label htmlFor='bpm'>BPM</Label>
+            <Select
+            alignSelf={'center'}
+                width={'50%'}
+                color='white' bg='#293b25'
+                id='idbpm'
+                name='bpm'
+                value={this.state.bpm}
+                onChange={this.handleChangeBPM}
+                >
+                    {Object.entries(this.state.bpms).map(([ key, bpmv ]) => (
+                    <option
+                        key={key}>
+                        {bpmv}
+                    </option>
+                ))}
+            </Select>
         </Box>
         );
     }

@@ -1,6 +1,6 @@
 import { Outlet, Link} from "react-router-dom";
 import React from 'react'
-import logo from './cclab.png';
+import logo from './logo.png';
 import './App.css';
 
 

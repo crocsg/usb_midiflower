@@ -8,6 +8,7 @@
 #include "lwip/apps/httpd.h"
 #include "utils.h"
 #include "flower_sensor.h"
+#include "flower_music.h"
 
 #define MAX_SSI_TAG_LEN	LWIP_HTTPD_MAX_TAG_NAME_LEN
 #define CRLF "\r\n"
@@ -24,7 +25,13 @@ extern "C" {
 #endif
 static const char* ssi_tags[] = {
   "flwdata",
-  "curip"
+  "curip",
+  "jscales",
+  "curscale",
+  "jnotes",
+  "curnote",
+  "jbpms",
+  "curbpm"
 };
 
 static const tCGI cgi_handlers[] = {
@@ -61,7 +68,7 @@ u16_t ssi_app_ssi_handler(
 
   switch (iIndex)
 	{
-	case 0: // flowerdata
+	case 0: // flwdata
 		{
     std::deque<mes_data>& data =  flower_sensor_get_history ();
 
@@ -71,7 +78,7 @@ u16_t ssi_app_ssi_handler(
       startdata = data[0].data;
     }
     uint16_t pos = current_tag_part * 4;  
-    for (i = pos; i < pos + 4 && iInsertLen > 32 && i < data.size () ; i++)
+    for (i = pos; i < pos + 4 && iInsertLen > 16 && i < data.size () ; i++)
     {
       pdata = snprintf(&pcInsert[printed], iInsertLen, "%s{\"id\":%lu,\"value\":%ld}", 
              n == 0 ? "":",",
@@ -88,14 +95,89 @@ u16_t ssi_app_ssi_handler(
 
     }
 		break;
-	case 1: // flowerdata
+	case 1: // curip
 		
     printed = snprintf(pcInsert, iInsertLen, " "); 
            
 		break;
-	
+  case 2: // jscales
+  {
+    const char** scales = flower_music_get_scale_names ();
+    uint8_t nbscale = flower_music_get_scale_names_nbr ();
+    printed = 0;
+    for (uint8_t i = 0; i < nbscale && iInsertLen > 16 ; i++)
+    {
+      pdata = snprintf(&pcInsert[printed], iInsertLen, "\"%s\"%s", scales[i], i == nbscale - 1 ? "" : ","); 
+      printed += pdata;
+      iInsertLen -= pdata;
+    }
+  }
+    break;
+  case 3: // curscale
+  {
+    const char** scales = flower_music_get_scale_names ();
+    uint8_t nbscale = flower_music_get_scale_names_nbr ();
+    uint8_t curscale = flower_music_get_scale();
+    printed = 0;
+    if (curscale < nbscale)
+    {
+      printed += snprintf(&pcInsert[printed], iInsertLen, "%s", scales[curscale]); 
+      
+    }
+  }
+    break;
+  
+  case 4: // "jnotes",
+  {
+    const char** notes = flower_music_get_note_names ();
+    uint8_t nbnote = flower_music_get_note_names_nbr ();
+    printed = 0;
+    for (uint8_t i = 0; i < nbnote && iInsertLen > 16 ; i++)
+    {
+      pdata = snprintf(&pcInsert[printed], iInsertLen, "\"%s\"%s", notes[i], i == nbnote - 1 ? "" : ","); 
+      printed += pdata;
+      iInsertLen -= pdata;
+    }
+  }
+    break;
+  
+  case 5: //"curnote"  
+  {
+    const char** notes = flower_music_get_note_names ();
+    uint8_t nbnote = flower_music_get_scale_names_nbr ();
+    uint8_t curnote = flower_music_get_scale();
+    printed = 0;
+    if (curnote < nbnote)
+    {
+      printed += snprintf(&pcInsert[printed], iInsertLen, "%s", notes[curnote]); 
+      
+    }
+  }
+    break;
 
+  case 6: // "jbpms",
+  {
+    uint16_t* bpms = flower_music_get_bpm_values ();
+    uint8_t nbbpm = flower_music_get_bpm_values_nbr ();
+    printed = 0;
+    for (uint8_t i = 0; i < nbbpm && iInsertLen > 16 ; i++)
+    {
+      pdata = snprintf(&pcInsert[printed], iInsertLen, "%u%s", bpms[i], i == nbbpm - 1 ? "" : ","); 
+      printed += pdata;
+      iInsertLen -= pdata;
+    }
+  }
+    break;  
+
+  case 7: // "curbpm",
+  {
+    printed = 0;
+    printed += snprintf(&pcInsert[printed], iInsertLen, "%u",(uint16_t)  flower_music_get_basebpm()); 
+  }
+    break;    
 	}
+  
+  
 
 	return printed;
 }

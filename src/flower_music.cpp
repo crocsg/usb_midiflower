@@ -42,7 +42,7 @@ uint32_t last_sample_check = millis ();
 //#define BPM160 ((60 * 1000) / 160)
 //#define BPM BPM60
 
-#define BASE_BPM 120
+#define BASE_BPM 60
 
 // nombre maxi de notes midi simultanees dans le sequencer
 // max midi notes tracked in sequencer
@@ -85,6 +85,38 @@ const char* scalename[] =
   "Blues",
   "Chromatic",
   "Drum?"
+};
+
+const char* notenames[] = 
+{
+   "C",
+            "C#",
+            "D",
+            "D#",
+            "E",
+            "E#",
+            "F",
+            "F#",
+            "G",
+            "G#",
+            "A",
+            "A#",
+            "B"
+};
+
+uint16_t bpmvalues[] = {
+        40,
+        60,
+        75,
+        90,
+        96,
+        120,
+        130,
+        135,
+        140,
+        145,
+        160,
+        175
 };
 
 static uint8_t *scaleSelect = scalePentaMajor; //initialize scaling
@@ -291,14 +323,34 @@ void flower_music_set_scale (uint8_t scale)
   }
 }
 
-const char** flower_music_get_scale_name (void)
+const char** flower_music_get_scale_names (void)
 {
   return scalename;
 }
 
-uint8_t flower_music_get_scale_name_nbr (void)
+
+uint8_t flower_music_get_scale_names_nbr (void)
 {
   return ARRAYLEN(scalename);
+}
+
+const char** flower_music_get_note_names (void)
+{
+  return notenames;
+}
+
+uint8_t flower_music_get_note_names_nbr (void)
+{
+  return ARRAYLEN(notenames);
+}
+
+uint16_t*       flower_music_get_bpm_values (void)
+{
+  return bpmvalues;
+}
+uint8_t         flower_music_get_bpm_values_nbr (void)
+{
+  return ARRAYLEN(bpmvalues);
 }
 
 uint8_t* flower_music_get_current_scale (void)

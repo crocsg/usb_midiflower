@@ -1,0 +1,20 @@
+{
+    
+    "scales":[
+            <!--#jscales-->
+            ],
+    "scale":"<!--#curscale-->",
+    "notes":[
+        <!--#jnotes-->
+        ],
+    "rootnote":"<!--#curnote-->",
+    "bpms":[
+        <!--#jbpms-->
+    ],
+    "bpm":<!--#curbpm-->
+          
+    
+    
+
+
+}

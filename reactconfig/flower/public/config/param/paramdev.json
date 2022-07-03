@@ -10,7 +10,7 @@
             "Blues",
             "Chromatic"
             ],
-    "scale":"Major",
+    "scale":"Pentatonic Minor",
     "notes":[
             "C",
             "C#",
@@ -41,7 +41,7 @@
         160,
         175
     ],
-    "bpm":120,
+    "bpm":96,
           
     
     "tags":"//<!--#flwdata-->//<!--#curip-->"
