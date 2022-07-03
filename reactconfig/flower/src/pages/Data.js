@@ -81,7 +81,7 @@ export default class Data extends React.Component {
               <Tooltip />
               <Legend />
               
-              <Line type="monotone" dataKey="value" stroke="white" />
+              <Line type="monotone" dataKey="value" stroke="black" />
             </LineChart>
           
         )

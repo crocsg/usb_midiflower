@@ -70,20 +70,58 @@ export default class Parameters extends React.Component {
         this.setState ({scale:event.target.value});
         console.log(event.target.value);
         console.log("scale value");
+        let scale = 0;
+        for (let i = 0; i < this.state.scales.length; i++)
+        {
+            if (this.state.scales[i] === event.target.value)
+            {   
+                scale = i;
+                break;
+            }
+        }
+        let url = window.url_prefix + '/config/setdata/data?scale='+ scale.toString();
+        fetch (url).finally(
+                () => {
+                    this.loaddata()
+                    }
+                );    
       };
     
     handleChangeNote = event => {
-    console.log ("changing note");
-    this.setState ({note:event.target.value});
-    console.log(event.target.value);
-    console.log("note value");
+        console.log ("changing note");
+        this.setState ({note:event.target.value});
+        console.log(event.target.value);
+        console.log("note value");
+        let root = 0;
+        for (let i = 0; i < this.state.notes.length; i++)
+        {
+            if (this.state.notes[i] === event.target.value)
+            {   
+                root = i;
+                break;
+            }
+        }
+        let url = window.url_prefix + '/config/setdata/data?root='+ root.toString();
+        fetch (url).finally(
+                () => {
+                    this.loaddata()
+                    }
+                );    
     };
+    
     
     handleChangeBPM = event => {
         console.log ("changing bpm");
         this.setState ({bpm:event.target.value});
         console.log(event.target.value);
         console.log("bpm value");
+
+        let url = window.url_prefix + '/config/setdata/data?bpm='+ event.target.value.toString();
+        fetch (url).finally(
+            () => {
+                this.loaddata()
+                }
+            )    
         };
 
     render () {

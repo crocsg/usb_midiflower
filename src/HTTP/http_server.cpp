@@ -6,6 +6,8 @@
 #include "lwip/timeouts.h"
 #include "lwip/ethip6.h"
 #include "lwip/apps/httpd.h"
+#include "lwip/def.h"
+
 #include "utils.h"
 #include "flower_sensor.h"
 #include "flower_music.h"
@@ -34,10 +36,16 @@ static const char* ssi_tags[] = {
   "curbpm"
 };
 
+static const char *cgi_setdata(int iIndex, int iNumParams, char *pcParam[], char *pcValue[]);
+
 static const tCGI cgi_handlers[] = {
   {
     "/config/data/bidon/data.json",
     NULL
+  },
+  {
+    "/config/setdata/data",
+    cgi_setdata
   },
   
 };
@@ -144,8 +152,8 @@ u16_t ssi_app_ssi_handler(
   case 5: //"curnote"  
   {
     const char** notes = flower_music_get_note_names ();
-    uint8_t nbnote = flower_music_get_scale_names_nbr ();
-    uint8_t curnote = flower_music_get_scale();
+    uint8_t nbnote = flower_music_get_note_names_nbr ();
+    uint8_t curnote = flower_music_get_current_root();
     printed = 0;
     if (curnote < nbnote)
     {
@@ -180,6 +188,32 @@ u16_t ssi_app_ssi_handler(
   
 
 	return printed;
+}
+
+static const char *cgi_setdata(int iIndex, int iNumParams, char *pcParam[], char *pcValue[])
+{
+  uint16_t paramval =0;
+   LWIP_ASSERT("check index", iIndex < LWIP_ARRAYSIZE(cgi_handlers));
+  if (iNumParams > 0)
+  {
+    paramval = atoi (pcValue[0]);
+    if (strncmp (pcParam[0], "scale", LWIP_HTTPD_MAX_TAG_NAME_LEN ) == 0)
+    {
+      LWIP_DEBUGF(HTTP_CGI_DEBUG, ("scale config :%s %d\n", pcValue[0], paramval));
+      flower_music_set_scale (paramval);
+    }
+    else if (strncmp (pcParam[0], "root", LWIP_HTTPD_MAX_TAG_NAME_LEN ) == 0)
+    {
+      LWIP_DEBUGF(HTTP_CGI_DEBUG, ("root config :%s %d\n", pcValue[0], paramval));
+      flower_music_set_root (paramval);
+    }
+    else if (strncmp (pcParam[0], "bpm", LWIP_HTTPD_MAX_TAG_NAME_LEN ) == 0)
+    {
+      LWIP_DEBUGF(HTTP_CGI_DEBUG, ("bpm config :%s %d\n", pcValue[0], paramval));
+      flower_music_set_basebpm (paramval);
+    }
+  }
+  return ("/config/data/empty.json");
 }
 
 #ifdef __cplusplus
