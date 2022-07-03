@@ -16,6 +16,8 @@
 #define CRLF "\r\n"
 
 
+extern CMidiFlowerSequencer sequencer;
+
 typedef struct _ssi_app_tags
 {
 	uint8_t	id;
@@ -33,10 +35,12 @@ static const char* ssi_tags[] = {
   "jnotes",
   "curnote",
   "jbpms",
-  "curbpm"
+  "curbpm",
+  "channels"
 };
 
 static const char *cgi_setdata(int iIndex, int iNumParams, char *pcParam[], char *pcValue[]);
+static const char *cgi_setchan(int iIndex, int iNumParams, char *pcParam[], char *pcValue[]);
 
 static const tCGI cgi_handlers[] = {
   {
@@ -47,7 +51,10 @@ static const tCGI cgi_handlers[] = {
     "/config/setdata/data",
     cgi_setdata
   },
-  
+  {
+    "/config/setdata/chan",
+    cgi_setchan
+  },
 };
 
 u16_t ssi_app_ssi_handler(
@@ -183,7 +190,25 @@ u16_t ssi_app_ssi_handler(
     printed += snprintf(&pcInsert[printed], iInsertLen, "%u",(uint16_t)  flower_music_get_basebpm()); 
   }
     break;    
-	}
+	
+  case 8: // channels,
+  {
+    
+    uint8_t nbchannel = sequencer.get_nbtracks ();
+    printed = 0;
+    for (uint8_t i = 0; i < nbchannel && iInsertLen > 8 ; i++)
+    {
+      pdata = snprintf(&pcInsert[printed], iInsertLen, "{\"mul\":%u,\"size\":%u,\"ratio\":%u}%s", 
+        sequencer.get_track_mulbpm(i), 
+        sequencer.get_track_size(i), 
+        sequencer.get_track_ratio(i), 
+        i == nbchannel - 1 ? "" : ","); 
+      printed += pdata;
+      iInsertLen -= pdata;
+    }
+  }
+    break;  
+  }
   
   
 
@@ -211,6 +236,34 @@ static const char *cgi_setdata(int iIndex, int iNumParams, char *pcParam[], char
     {
       LWIP_DEBUGF(HTTP_CGI_DEBUG, ("bpm config :%s %d\n", pcValue[0], paramval));
       flower_music_set_basebpm (paramval);
+    }
+  }
+  return ("/config/data/empty.json");
+}
+
+static const char *cgi_setchan(int iIndex, int iNumParams, char *pcParam[], char *pcValue[])
+{
+  uint16_t paramval =0;
+  uint16_t channel = 0;
+   LWIP_ASSERT("check index", iIndex < LWIP_ARRAYSIZE(cgi_handlers));
+  if (iNumParams > 1)
+  {
+    channel = atoi (pcValue[0]);
+    paramval = atoi (pcValue[1]);
+    if (strncmp (pcParam[1], "mul", LWIP_HTTPD_MAX_TAG_NAME_LEN ) == 0)
+    {
+      LWIP_DEBUGF(HTTP_CGI_DEBUG, ("mul config :%d %s %d\n", channel, pcValue[0], paramval));
+      sequencer.set_track_mulbpm (channel, paramval);
+    }
+    else if (strncmp (pcParam[1], "size", LWIP_HTTPD_MAX_TAG_NAME_LEN ) == 0)
+    {
+      LWIP_DEBUGF(HTTP_CGI_DEBUG, ("size config :%d %s %d\n", channel, pcValue[0], paramval));
+      sequencer.set_track_size (channel, paramval);
+    }
+    else if (strncmp (pcParam[1], "ratio", LWIP_HTTPD_MAX_TAG_NAME_LEN ) == 0)
+    {
+      LWIP_DEBUGF(HTTP_CGI_DEBUG, ("ratio config :%d %s %d\n", channel, pcValue[0], paramval));
+      sequencer.set_track_ratio (channel, paramval);
     }
   }
   return ("/config/data/empty.json");

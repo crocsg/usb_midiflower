@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Box} from 'rebass';
+import { Button, Flex, Box} from 'rebass';
 import { Label, Select } from '@rebass/forms'
 import isDev from './devdetect';
 
@@ -128,14 +128,17 @@ export default class Parameters extends React.Component {
         //defaultValue={this.state.note}
         console.log ("scale rendered", this.state.scale);
         return (
-        <Box color='white' bg='#293b25a90' width={'100%'} >
+            <Flex>
+                <Box p={3} width={'20%'}></Box>
+        <Box color='white' bg='#293b2590' width={'60%'} >
 
-            
+            <h1>General Parameters</h1>
+            <Box  p={3} color='white' bg='#293b2500' width={'100%'} >
             <Label htmlFor='scale'>Scale</Label>
             <Select
                 alignSelf={'center'}
                 
-                width={'50%'}
+                width={'100%'}
                 color='white' bg='#293b25'
                 id='idscale'
                 name='Scale'
@@ -149,13 +152,13 @@ export default class Parameters extends React.Component {
                     </option>
                 ))}
             </Select>
-            
+            </Box>
 
-            <Box  color='white' bg='#ff3b2590' width={'50%'} >
+            <Box  p={3} color='white' bg='#293b2500' width={'100%'} >
             <Label htmlFor='note'>Root note</Label>
             <Select
             
-                width={'50%'}
+                width={'100%'}
                 color='white' bg='#293b25'
                 id='idnote'
                 name='Note'
@@ -170,10 +173,11 @@ export default class Parameters extends React.Component {
                 ))}
             </Select>
             </Box>
+            <Box  p={3} color='white' bg='#293b2500' width={'100%'} >
             <Label htmlFor='bpm'>BPM</Label>
             <Select
             alignSelf={'center'}
-                width={'50%'}
+                width={'100%'}
                 color='white' bg='#293b25'
                 id='idbpm'
                 name='bpm'
@@ -187,7 +191,10 @@ export default class Parameters extends React.Component {
                     </option>
                 ))}
             </Select>
+            </Box>
         </Box>
+        <Box p={3} width={'20%'}></Box>
+        </Flex>
         );
     }
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-import {Button, Box} from 'rebass';
+import {Button, Flex, Box} from 'rebass';
 
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import '../App.css';
@@ -65,7 +65,7 @@ export default class Data extends React.Component {
         return (
             
             <LineChart
-            width={1800}
+            width={1024}
             height={400}
               data={this.state.data.mesures}
               margin={{
@@ -100,19 +100,24 @@ export default class Data extends React.Component {
             graphjsx = this.renderchart ();
         }
         return (
-            <Box color='white' bg='#293b25'>
-                    <p>{this.state.name}</p>
+            <Flex>
+            <Box p={3} width={'20%'}></Box>
+            <Box color='white' bg='#293b25b0' width={'60%'}>
+                    <h1>Sensor Measures</h1>
                 
-                    <div className='graphbox'>
+                    
+                    <Box p={3} width={'100%'}>
                         {
                             graphjsx
                         }
-                    </div>
+                    </Box>    
+                    
                
                     <p><Button color="white" bg="#256C20" mr={2} onClick={this.refresh}>Refresh</Button></p>
                     <p>{msg}</p>
                </Box>
-            
+            <Box p={3} width={'20%'}></Box>
+            </Flex>
           );
     }
   };
