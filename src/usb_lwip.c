@@ -67,7 +67,7 @@ static struct pbuf *received_frame;
 const uint8_t tud_network_mac_address[6] = {0x02,0x02,0x84,0x6A,0x96,0x00};
 
 /* network parameters of this MCU */
-static const ip4_addr_t ipaddr  = INIT_IP4(192, 168, 7, 1);
+static const ip4_addr_t ipaddr  = INIT_IP4(192, 168, 8, 1);
 static const ip4_addr_t netmask = INIT_IP4(255, 255, 255, 0);
 static const ip4_addr_t gateway = INIT_IP4(0, 0, 0, 0);
 
@@ -75,16 +75,16 @@ static const ip4_addr_t gateway = INIT_IP4(0, 0, 0, 0);
 static dhcp_entry_t entries[] =
 {
     /* mac ip address                          lease time */
-    { {0}, INIT_IP4(192, 168, 7, 2), 24 * 60 * 60 },
-    { {0}, INIT_IP4(192, 168, 7, 3), 24 * 60 * 60 },
-    { {0}, INIT_IP4(192, 168, 7, 4), 24 * 60 * 60 },
+    { {0}, INIT_IP4(192, 168, 8, 2), 24 * 60 * 60 },
+    { {0}, INIT_IP4(192, 168, 8, 3), 24 * 60 * 60 },
+    { {0}, INIT_IP4(192, 168, 8, 4), 24 * 60 * 60 },
 };
 
 static const dhcp_config_t dhcp_config =
 {
     .router = INIT_IP4(0, 0, 0, 0),            /* router address (if any) */
     .port = 67,                                /* listen port */
-    .dns = INIT_IP4(192, 168, 7, 1),           /* dns server (if any) */
+    .dns = INIT_IP4(192, 168, 8, 1),           /* dns server (if any) */
     "usb",                                     /* dns suffix */
     TU_ARRAY_SIZE(entries),                    /* num entry */
     entries                                    /* entries */

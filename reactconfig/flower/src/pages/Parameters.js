@@ -12,9 +12,9 @@ export default class Parameters extends React.Component {
             scales:[],
             scale:"?",
             notes:[],
-            rootnote:"?",
+            rootnote:"C",
             bpms:[],
-            bpm:[]
+            bpm:90
         };
         
         this.handleChangeScale = this.handleChangeScale.bind(this);
@@ -56,9 +56,10 @@ export default class Parameters extends React.Component {
                         this.setState ({scales:result.scales})
                         this.setState ({scale:result.scale})
                         this.setState ({notes:result.notes})
-                        this.setState ({note:result.note})
+                        this.setState ({rootnote:result.rootnote})
                         this.setState ({bpms:result.bpms})
                         this.setState ({bpm:result.bpm})
+                        this.forceUpdate();
                     }
 
                 }
@@ -162,7 +163,7 @@ export default class Parameters extends React.Component {
                 color='white' bg='#293b25'
                 id='idnote'
                 name='Note'
-                value={this.state.note}
+                value={this.state.rootnote}
                 onChange={this.handleChangeNote}
                 >
                     {Object.entries(this.state.notes).map(([ key, note ]) => (

@@ -42,7 +42,7 @@ uint32_t last_sample_check = millis ();
 //#define BPM160 ((60 * 1000) / 160)
 //#define BPM BPM60
 
-#define BASE_BPM 60
+#define BASE_BPM 90
 
 // nombre maxi de notes midi simultanees dans le sequencer
 // max midi notes tracked in sequencer
