@@ -32,10 +32,17 @@ void pwm_init (void)
 {
     gpio_pwm_hal_init ();
 }
+
 void pwm_activity_level (uint16_t level)
 {
     gpio_pwm_hal_set_pwm (PWM_OUT_1, level);
 }
+
+void pwm_output_level (uint16_t level)
+{
+    gpio_pwm_hal_set_pwm (PWM_OUT_2, level);
+}
+
 
 void pwm_all_off (void)
 {

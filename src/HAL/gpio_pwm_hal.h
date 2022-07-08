@@ -33,6 +33,8 @@
 extern "C" {
 #endif
 
+#define HAL_PWM_PERIOD  512
+#define HAL_PWM_BITS    9
 
 
 void gpio_pwm_hal_init ();

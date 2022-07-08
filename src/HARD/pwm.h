@@ -28,10 +28,15 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+#include "gpio_pwm_hal.h"
+
+#define PWM_PERIOD  HAL_PWM_PERIOD
+#define PWM_BITS    HAL_PWM_BITS
 
 
 void pwm_init (void);
 void pwm_activity_level (uint16_t level);
+void pwm_output_level (uint16_t level);
 void pwm_all_off (void);
 
 #ifdef __cplusplus

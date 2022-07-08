@@ -34,6 +34,7 @@ extern "C" {
 
 gpio_pwm board_pwm[PWM_OUT_NBR] = {
     { PWM_OUT_1, 2},
+    { PWM_OUT_2, 5},
     
 };
 
@@ -45,8 +46,8 @@ void gpio_pwm_hal_init (void)
     {
         gpio_set_function(board_pwm[i].gpio, GPIO_FUNC_PWM);
       
-        // Set period of 65536 cycles (0 to 65535 inclusive)
-        pwm_set_wrap(pwm_gpio_to_slice_num(board_pwm[i].gpio), 65535);
+        // Set period of 512 cycles (0 to 65535 inclusive)
+        pwm_set_wrap(pwm_gpio_to_slice_num(board_pwm[i].gpio), HAL_PWM_PERIOD - 1);
 	  
 	    // define global level to 0
         pwm_set_chan_level(pwm_gpio_to_slice_num(board_pwm[i].gpio), pwm_gpio_to_channel(board_pwm[i].gpio) , 0);

@@ -236,6 +236,10 @@ void flower_sensor_analyzeSample(void)
       threshold_evt ++;
     }
 
+    // set output level
+    pwm_output_level (averg % PWM_PERIOD);
+
+    // signal callback with sensor measure
     if (change && _setmes)
     {
       //Serial.printf("%ld %ld %ld %ld %f %f\r\n", minim, maxim, averg, delta, stdevi, stdevi * threshold); 

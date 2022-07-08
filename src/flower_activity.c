@@ -118,7 +118,7 @@ static void flower_timer_callback (void)
             _state = RUNNING;
             break;
         case RUNNING:
-            pwm_activity_level (_activity_val[flower_activity_id]);
+            pwm_activity_level (_activity_val[flower_activity_id] >> (16 - PWM_BITS) );
             flower_activity_id++;
             if (flower_activity_id >= ARRAYLEN (_activity_val))
             {

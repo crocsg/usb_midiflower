@@ -34,6 +34,7 @@ extern "C" {
     typedef enum
     {
         PWM_OUT_1,
+        PWM_OUT_2,
         PWM_OUT_NBR,
     } gpio_pwm_id;
 
