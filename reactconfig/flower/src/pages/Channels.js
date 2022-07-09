@@ -13,26 +13,23 @@ export default class Channels extends React.Component {
         chan:[],
         mul:["off", "1", "2", "4"],
         size:["8", "16", "32", "48", "64", "128"],
-        ratio:["10", "25", "30", "50", "75", "100"]
+        ratio:["10", "25", "30", "50", "75", "100"],
+        volumes:[80, 81, 82, 83, 84, 85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100],
+        volume:100
     };
     
     
     this.handleChangeMul = this.handleChangeMul.bind(this);
     this.handleChangeSize = this.handleChangeSize.bind(this);
     this.handleChangeRatio = this.handleChangeRatio.bind(this);
+    this.handleChangeVolume = this.handleChangeVolume.bind(this);
     
     }
 
     handleChangeMul = event => {
-      console.log ("changing mul");
-      
-      console.log(event.target);
-      console.log(event.target.value);
-      console.log("bpm value");
       
       if (parseInt(event.target.id) < this.state.chan.length)
       {
-        let tmp = this.state.chan;
         this.state.chan[parseInt(event.target.id)].mul = event.target.value;
         this.setState (this.state.chan);
         let url = window.url_prefix + '/config/setdata/chan?channel='+ event.target.id + '&mul=' + event.target.value;
@@ -48,15 +45,11 @@ export default class Channels extends React.Component {
     };
 
     handleChangeSize = event => {
-      console.log ("changing size");
+      
       this.setState ({bpm:event.target.value});
-      console.log(event.target);
-      console.log(event.target.value);
-      console.log("bpm value");
       
       if (parseInt(event.target.id) < this.state.chan.length)
       {
-        let tmp = this.state.chan;
         this.state.chan[parseInt(event.target.id)].size = event.target.value;
         this.setState (this.state.chan);
         let url = window.url_prefix + '/config/setdata/chan?channel='+ event.target.id + '&size=' + event.target.value;
@@ -71,15 +64,11 @@ export default class Channels extends React.Component {
       
     };
     handleChangeRatio = event => {
-      console.log ("changing size");
+      
       this.setState ({bpm:event.target.value});
-      console.log(event.target);
-      console.log(event.target.value);
-      console.log("bpm value");
       
       if (parseInt(event.target.id) < this.state.chan.length)
       {
-        let tmp = this.state.chan;
         this.state.chan[parseInt(event.target.id)].size = event.target.value;
         this.setState (this.state.chan);
         let url = window.url_prefix + '/config/setdata/chan?channel='+ event.target.id + '&ratio=' + event.target.value;
@@ -93,6 +82,28 @@ export default class Channels extends React.Component {
       
       
     };
+    handleChangeVolume = event => {
+        
+        this.setState ({volume:event.target.value});
+        console.log(event.target);
+        console.log(event.target.value);
+        console.log("bpm value");
+        
+        if (parseInt(event.target.id) < this.state.chan.length)
+        {
+          this.state.chan[parseInt(event.target.id)].volume = event.target.value;
+          this.setState (this.state.chan);
+          let url = window.url_prefix + '/config/setdata/chan?channel='+ event.target.id + '&vol=' + event.target.value;
+        
+          fetch (url).finally(
+              () => {
+                  this.loaddata()
+                  }
+              )    
+          }
+        
+        
+      };
     componentDidMount ()
     {
       this.loaddata();
@@ -195,6 +206,24 @@ export default class Channels extends React.Component {
                   onChange={this.handleChangeRatio}
                   >
                       {Object.entries(this.state.ratio).map(([ key, value ]) => (
+                      <option
+                          key={key}>
+                          {value}
+                      </option>
+                  ))}
+              </Select>
+              <Label htmlFor='chan{index}'>Relative Velocity (%)</Label>
+              <Select
+                  alignSelf={'center'}
+                  
+                  width={'100%'}
+                  color='white' bg='#293b25'
+                  id={index}
+                  name={'chan' + index}
+                  value={channel.vol}
+                  onChange={this.handleChangeVolume}
+                  >
+                      {Object.entries(this.state.volumes).map(([ key, value ]) => (
                       <option
                           key={key}>
                           {value}

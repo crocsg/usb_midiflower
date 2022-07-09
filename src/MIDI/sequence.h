@@ -85,6 +85,15 @@ public:
         return m_bpm_multi;
     }
 
+    void setRelativeVol (uint32_t vol)
+    {
+        m_vol = vol;
+    }
+
+    uint32_t getRelativeVol (void)
+    {
+        return m_vol;
+    }
     bool isEnabled ()
     {
         return (m_tempo > 0);
@@ -110,15 +119,16 @@ private:
 
     
     
-    std::vector<MIDImessage>    m_seq;
+    std::vector<MIDImessage>    m_seq;          // midi notes array
     std::vector<uint8_t>        m_melody;
-    size_t                      m_size;
-    uint32_t                    m_tempo;
-    uint32_t                    m_bpm_multi;
-    uint32_t                    m_bpm;
-    uint32_t                    m_noteratio;
-    uint32_t                    m_lastplay;
-    uint32_t                    m_cntnote;
+    size_t                      m_size;         // size in notes
+    uint32_t                    m_tempo;        
+    uint32_t                    m_bpm_multi;    // bpm multiplier
+    uint32_t                    m_bpm;          // base bpm
+    uint32_t                    m_noteratio;    // sequence fill ratio
+    uint32_t                    m_lastplay;     // last play time
+    uint32_t                    m_cntnote;      // count note in sequence
+    uint32_t                    m_vol;          // sequence relative volume
 };
 
 #endif 

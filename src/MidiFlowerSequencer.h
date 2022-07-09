@@ -110,6 +110,20 @@ public:
         m_ptracks[track]->setRatio (ratio);            
     }
 
+    void set_track_relative_vol (uint8_t track, uint32_t vol)
+    {
+        if (track >= m_ptracks.size())
+            return;
+        m_ptracks[track]->setRelativeVol (vol);                        
+    }
+
+    uint32_t get_track_relative_vol (uint8_t track)
+    {
+        if (track >= m_ptracks.size())
+            return 0;
+        return (m_ptracks[track]->getRelativeVol ());
+    }
+    
     void addNote (uint8_t track, uint32_t time, uint8_t value, uint8_t velocity, uint16_t duration, uint16_t ramp, uint8_t notechannel)
     {
         if (track >= m_ptracks.size())

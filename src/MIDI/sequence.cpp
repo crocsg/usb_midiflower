@@ -42,6 +42,7 @@ CSequence::CSequence (size_t maxsize, uint32_t bpm, uint32_t bpmmulti, uint32_t 
     m_bpm_multi = bpmmulti;
     m_bpm = bpm;
     m_tempo = (60 * 1000) /  (m_bpm * m_bpm_multi);
+    m_vol = 100;
     UpdateTempo ();
 }
 
@@ -100,6 +101,7 @@ uint8_t CSequence::play_seq (uint32_t time, MIDImessage* mes)
     {
         //Serial.printf ("node pos=%d, ch=%d, val=%d, vel=%d\n", pos, m_seq[pos].channel, m_seq[pos].value, m_seq[pos].velocity);
         *mes = m_seq[pos];
+        mes->velocity = (mes->velocity * m_vol) / 100;
         return (1);
     }
     return (0);
