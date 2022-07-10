@@ -101,6 +101,7 @@ target_include_directories(usb-midiflower PRIVATE
 target_link_libraries(usb-midiflower PRIVATE
   pico_stdlib
   hardware_pwm
+  hardware_dma
   tinyusb_device
   tinyusb_board
   lwipallapps 

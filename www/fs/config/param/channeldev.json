@@ -2,9 +2,9 @@
     
     "channels":[
             {"mul":1, "size":16, "ratio":75, "vol":100},
-            {"mul":2, "size":128, "ratio":100, "vol":100},
-            {"mul":4, "size":64, "ratio":50, "vol":100},
-            {"mul":0, "size":8,  "ratio":25, "vol":100}
+            {"mul":2, "size":128, "ratio":100, "vol":99},
+            {"mul":4, "size":64, "ratio":50, "vol":98},
+            {"mul":0, "size":8,  "ratio":25, "vol":97}
             ]
 
 

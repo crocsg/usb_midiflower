@@ -98,7 +98,7 @@ u16_t ssi_app_ssi_handler(
       pdata = snprintf(&pcInsert[printed], iInsertLen, "%s{\"id\":%lu,\"value\":%ld}", 
              n == 0 ? "":",",
              i,
-             (int) ((int) data[i].data - (int) startdata)
+             (int) ((int) data[i].data /*- (int) startdata*/)
              
             );
       n++;      

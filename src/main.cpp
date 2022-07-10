@@ -36,6 +36,7 @@
 #include "flower_activity.h"
 #include "usb_lwip.h"
 #include "http_server.h"
+#include "crc.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -95,6 +96,8 @@ int main() {
 
     for (int i = 0; i < 10; i++)
         printf ("yahoo\r\n");
+
+    test_crc32 ();        
     setup();
     while (true)
     {
