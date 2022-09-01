@@ -30,7 +30,7 @@
 #include "TOOLS/utils.h"
 #include "HARD/led.h"
 
-#define FLOWER_ACTIVITY_PERIOD  25
+#define FLOWER_ACTIVITY_PERIOD  20
 
 #ifdef __cplusplus
 extern "C" {

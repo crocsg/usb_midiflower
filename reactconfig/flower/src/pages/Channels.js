@@ -275,7 +275,7 @@ export default class Channels extends React.Component {
                   id={index}
                   name={'chan' + index}
                   value={channel.c}
-                  onChange={this.handleChangeVolume}
+                  onChange={this.handleChangeChannel}
                   >
                       {Object.entries(this.state.channels).map(([ key, value ]) => (
                       <option

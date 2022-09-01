@@ -94,7 +94,7 @@ int main() {
     http_server_init ();
     sleep_ms(100);
 
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < 100; i++)
         printf ("yahoo\r\n");
 
     test_crc32 ();        

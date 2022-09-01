@@ -81,7 +81,7 @@
 #define TCPIP_DEBUG                     LWIP_DBG_OFF
 #define DHCP_DEBUG                      LWIP_DBG_OFF
 #define UDP_DEBUG                       LWIP_DBG_OFF
-#define HTTPD_DEBUG         			LWIP_DBG_OFF
+#define HTTPD_DEBUG         			LWIP_DBG_ON
 #define HTTP_DEV_DEBUG         			LWIP_DBG_OFF
 #define HTTP_POST_DEBUG         		LWIP_DBG_OFF
 #define HTTP_SSI_DEBUG         			LWIP_DBG_OFF

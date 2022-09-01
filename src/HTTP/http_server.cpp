@@ -198,7 +198,7 @@ u16_t ssi_app_ssi_handler(
     printed = 0;
     for (uint8_t i = 0; i < nbchannel && iInsertLen > 8 ; i++)
     {
-      pdata = snprintf(&pcInsert[printed], iInsertLen, "{\"ml\":%u,\"n\":%u,\"r\":%u,\"v\":%u,\"\"}%s", 
+      pdata = snprintf(&pcInsert[printed], iInsertLen, "{\"ml\":%u,\"n\":%u,\"r\":%u,\"v\":%u,\"c\":%u}%s", 
         sequencer.get_track_mulbpm(i), 
         sequencer.get_track_size(i), 
         sequencer.get_track_ratio(i), 
@@ -275,7 +275,7 @@ static const char *cgi_setchan(int iIndex, int iNumParams, char *pcParam[], char
     }
     else if (strncmp (pcParam[0], "chan", LWIP_HTTPD_MAX_TAG_NAME_LEN ) == 0)
     {
-      LWIP_DEBUGF(HTTP_CGI_DEBUG, ("bpm config :%s %d\n", pcValue[0], paramval));
+      LWIP_DEBUGF(HTTP_CGI_DEBUG, ("midi chan config :%s %d\n", pcValue[0], paramval));
       sequencer.set_track_midi_channel (channel, paramval);
     }
   }
