@@ -54,10 +54,10 @@ CMidiFlowerSequencer sequencer = CMidiFlowerSequencer(MAX_MIDI_NOTES);
 
 // definition des "pistes" midi du tempo associé et du taux de remplissage max
 // define tracks with associated BPM and fill ratio
-CSequence midi_track_1 = CSequence(128, BASE_BPM, 1, 100);
-CSequence midi_track_2 = CSequence(128, BASE_BPM, 1, 75);
-CSequence midi_track_3 = CSequence(128, BASE_BPM, 4, 75);
-CSequence midi_track_4 = CSequence(128, BASE_BPM, 1, 25);
+CSequence midi_track_1 = CSequence(128, BASE_BPM, 1, 100, 1);
+CSequence midi_track_2 = CSequence(128, BASE_BPM, 1, 75, 2);
+CSequence midi_track_3 = CSequence(128, BASE_BPM, 4, 75, 3);
+CSequence midi_track_4 = CSequence(128, BASE_BPM, 1, 25, 4);
 
 //******************************
 // define scale for music style
@@ -189,10 +189,10 @@ void setNote(uint32_t currentMillis, int value, int velocity, int duration, int 
     //Serial.printf ("add note time =%lu\n", currentMillis);
   // if first track is not 33% full add the note to it
   if (sequencer.get_track_nbnote(0) < sequencer.get_track_maxnote (0) / 2 && sequencer.get_track_mulbpm(0) > 0)
-    sequencer.addNote(0, currentMillis, value, velocity, duration, ramp, 1);
+    sequencer.addNote(0, currentMillis, value, velocity, duration, ramp);
   // if second track is not full at 33% add the note to it
   else if (sequencer.get_track_nbnote(1) < sequencer.get_track_maxnote (1) / 2 && sequencer.get_track_mulbpm(1) > 0)
-    sequencer.addNote(1, currentMillis, value, velocity, duration, ramp, 2);
+    sequencer.addNote(1, currentMillis, value, velocity, duration, ramp);
   else
   {
     // find a track and add the note
@@ -202,7 +202,7 @@ void setNote(uint32_t currentMillis, int value, int velocity, int duration, int 
     {
       uint16_t track = t % nbtracks;
       if (sequencer.get_track_mulbpm (track) > 0)
-        sequencer.addNote(track, currentMillis, value, velocity, duration, ramp,  track + 1);
+        sequencer.addNote(track, currentMillis, value, velocity, duration, ramp);
     }
   }
 }

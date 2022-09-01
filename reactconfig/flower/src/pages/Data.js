@@ -13,15 +13,31 @@ export default class Data extends React.Component {
             name:"Sensor measures",
             fetchmsg:"",
             data:[],
-
+            width:window.innerWidth,
+            height:window.innerHeight
     
         };
 
         this.refresh =this.refresh.bind(this);
+        
     }
+    
+    updateDimensions = () => {
+        console.log ("resize", window.innerHeight, window.innerWidth);
+        this.setState({ width: window.innerWidth, height: window.innerHeight });
+        this.forceUpdate();
+        window.location.reload(false);
+        
+      };
+      
     componentDidMount ()
     {
+        window.addEventListener('resize', this.updateDimensions);
         this.loaddata();
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.updateDimensions);
     }
 
     refresh ()
@@ -61,17 +77,19 @@ export default class Data extends React.Component {
     }
     renderchart ()
     {
-        console.log ("render chart");
+        
+        
         return (
-            
+            <ResponsiveContainer width="99%" height={400}>
             <LineChart
+
             width={1024}
             height={400}
               data={this.state.data.mesures}
               margin={{
                 top: 5,
-                right: 30,
-                left: 30,
+                right: 5,
+                left: 5,
                 bottom: 5,
               }}
             >
@@ -83,7 +101,7 @@ export default class Data extends React.Component {
               
               <Line type="monotone" dataKey="value" stroke="black" />
             </LineChart>
-          
+            </ResponsiveContainer>  
         )
     }
     render() {
@@ -92,7 +110,7 @@ export default class Data extends React.Component {
         let datajsx = "";
         let graphjsx = "";
 
-        console.log ("before data analyze", items);
+        
         if (items.mesures && items.mesures.length > 0)
         {
             console.log ("data analyze");
@@ -101,22 +119,22 @@ export default class Data extends React.Component {
         }
         return (
             <Flex>
-            <Box p={3} width={'20%'}></Box>
-            <Box color='white' bg='#293b25b0' width={'60%'}>
+            <Box p={3} width={'5%'}></Box>
+            <Box color='white' bg='#293b25b0' width={'90%'}>
                     <h1>Sensor Measures</h1>
                 
                     
-                    <Box p={3} width={'100%'}>
+                    
                         {
                             graphjsx
                         }
-                    </Box>    
+                    
                     
                
                     <p><Button color="white" bg="#256C20" mr={2} onClick={this.refresh}>Refresh</Button></p>
                     <p>{msg}</p>
                </Box>
-            <Box p={3} width={'20%'}></Box>
+            <Box p={3} width={'5%'}></Box>
             </Flex>
           );
     }

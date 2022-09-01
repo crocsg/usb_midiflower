@@ -198,11 +198,12 @@ u16_t ssi_app_ssi_handler(
     printed = 0;
     for (uint8_t i = 0; i < nbchannel && iInsertLen > 8 ; i++)
     {
-      pdata = snprintf(&pcInsert[printed], iInsertLen, "{\"mul\":%u,\"size\":%u,\"ratio\":%u,\"vol\":%u}%s", 
+      pdata = snprintf(&pcInsert[printed], iInsertLen, "{\"ml\":%u,\"n\":%u,\"r\":%u,\"v\":%u,\"\"}%s", 
         sequencer.get_track_mulbpm(i), 
         sequencer.get_track_size(i), 
         sequencer.get_track_ratio(i), 
         sequencer.get_track_relative_vol(i), 
+        sequencer.get_track_midi_channel(i),
         i == nbchannel - 1 ? "" : ","); 
       printed += pdata;
       iInsertLen -= pdata;
@@ -238,6 +239,7 @@ static const char *cgi_setdata(int iIndex, int iNumParams, char *pcParam[], char
       LWIP_DEBUGF(HTTP_CGI_DEBUG, ("bpm config :%s %d\n", pcValue[0], paramval));
       flower_music_set_basebpm (paramval);
     }
+    
   }
   return ("/config/data/empty.json");
 }
@@ -270,6 +272,11 @@ static const char *cgi_setchan(int iIndex, int iNumParams, char *pcParam[], char
     {
       LWIP_DEBUGF(HTTP_CGI_DEBUG, ("volume config :%d %s %d\n", channel, pcValue[0], paramval));
       sequencer.set_track_relative_vol (channel, paramval);
+    }
+    else if (strncmp (pcParam[0], "chan", LWIP_HTTPD_MAX_TAG_NAME_LEN ) == 0)
+    {
+      LWIP_DEBUGF(HTTP_CGI_DEBUG, ("bpm config :%s %d\n", pcValue[0], paramval));
+      sequencer.set_track_midi_channel (channel, paramval);
     }
   }
   return ("/config/data/empty.json");

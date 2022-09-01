@@ -123,13 +123,26 @@ public:
             return 0;
         return (m_ptracks[track]->getRelativeVol ());
     }
-    
-    void addNote (uint8_t track, uint32_t time, uint8_t value, uint8_t velocity, uint16_t duration, uint16_t ramp, uint8_t notechannel)
+
+    uint32_t get_track_midi_channel (uint8_t track)
+    {
+        if (track >= m_ptracks.size())
+            return 0;
+        return (m_ptracks[track]->getMidiChannel ());
+    }
+
+    void set_track_midi_channel (uint8_t track, uint16_t channel)
+    {
+        if (track >= m_ptracks.size())
+            return;
+        return (m_ptracks[track]->setMidiChannel (channel));
+    }
+    void addNote (uint8_t track, uint32_t time, uint8_t value, uint8_t velocity, uint16_t duration, uint16_t ramp)
     {
         if (track >= m_ptracks.size())
             return;
         //Serial.printf ("add note chan=%d time=%lu value=%d duration=%d \n", notechannel, time, value, duration);
-        m_ptracks[track]->addNote (time, value, velocity, duration, ramp, notechannel);
+        m_ptracks[track]->addNote (time, value, velocity, duration, ramp);
     }
 
     void setLock (bool lock) { m_lock = lock;}

@@ -29,7 +29,7 @@ work about biodata sonification
 #include "sequence.h"
 
 
-CSequence::CSequence (size_t maxsize, uint32_t bpm, uint32_t bpmmulti, uint32_t noteratio)
+CSequence::CSequence (size_t maxsize, uint32_t bpm, uint32_t bpmmulti, uint32_t noteratio, uint16_t midichannel)
 {
     
     m_tempo = 0;
@@ -43,10 +43,11 @@ CSequence::CSequence (size_t maxsize, uint32_t bpm, uint32_t bpmmulti, uint32_t 
     m_bpm = bpm;
     m_tempo = (60 * 1000) /  (m_bpm * m_bpm_multi);
     m_vol = 100;
+    m_midichannel = midichannel;
     UpdateTempo ();
 }
 
-void CSequence::addNote (uint32_t time, uint8_t value, uint8_t velocity, uint16_t duration, uint16_t ramp, uint8_t notechannel)
+void CSequence::addNote (uint32_t time, uint8_t value, uint8_t velocity, uint16_t duration, uint16_t ramp)
 {
     //Serial.printf("addNote vel=%d tempo =%d", velocity, m_tempo );    
     if (velocity == 0 || m_tempo == 0)
@@ -56,7 +57,7 @@ void CSequence::addNote (uint32_t time, uint8_t value, uint8_t velocity, uint16_
     mes.value = value;
     mes.velocity = velocity;
     mes.duration = duration;
-    mes.channel = notechannel;
+    mes.channel = m_midichannel;
     mes.ramp = ramp;
 
     size_t pos = (time / m_tempo) % m_size;
@@ -102,6 +103,7 @@ uint8_t CSequence::play_seq (uint32_t time, MIDImessage* mes)
         //Serial.printf ("node pos=%d, ch=%d, val=%d, vel=%d\n", pos, m_seq[pos].channel, m_seq[pos].value, m_seq[pos].velocity);
         *mes = m_seq[pos];
         mes->velocity = (mes->velocity * m_vol) / 100;
+        mes->channel = m_midichannel;
         return (1);
     }
     return (0);

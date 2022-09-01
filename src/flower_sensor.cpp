@@ -40,7 +40,7 @@
 #define SAMPLESIZE    32
 #define MIN_DELTA     250
 
-#define FLOWER_MUSIC_HISTORY_SIZE 128
+#define FLOWER_MUSIC_HISTORY_SIZE 1024
 
 static void update_history (uint32_t mestime, uint32_t minim, uint32_t maxim, uint32_t averg, uint32_t delta);
 
