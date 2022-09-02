@@ -68,6 +68,25 @@ export default class Data extends React.Component {
                 (result) => {
                     if (result)
                     {
+                        console.log(result);
+                        
+                        if (result.mesures.length > 0)
+                        {
+                            let mean = 0;
+                            for (let i = 0; i < result.mesures.length; i++)
+                            {
+                                mean += result.mesures[i].value;
+                            }
+                            mean /= result.mesures.length;
+                            for (let i = 0; i < result.mesures.length; i++)
+                            {
+                                result.mesures[i].value -= mean;
+                                if (result.mesures[i].value > 2048)
+                                    result.mesures[i].value = 2048;
+                                if (result.mesures[i].value < -2048)
+                                    result.mesures[i].value = -2048;        
+                            }
+                        }
                         console.log (result);
                         this.setState ({data:result})
                     }
@@ -99,7 +118,7 @@ export default class Data extends React.Component {
               <Tooltip />
               <Legend />
               
-              <Line type="monotone" dataKey="value" stroke="black" />
+              <Line type="natural" dataKey="value" stroke="#50a050" />
             </LineChart>
             </ResponsiveContainer>  
         )
