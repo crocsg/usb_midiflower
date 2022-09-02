@@ -249,6 +249,7 @@ static const char *cgi_setchan(int iIndex, int iNumParams, char *pcParam[], char
   uint16_t paramval =0;
   uint16_t channel = 0;
    LWIP_ASSERT("check index", iIndex < LWIP_ARRAYSIZE(cgi_handlers));
+   
   if (iNumParams > 1)
   {
     channel = atoi (pcValue[0]);
@@ -273,9 +274,9 @@ static const char *cgi_setchan(int iIndex, int iNumParams, char *pcParam[], char
       LWIP_DEBUGF(HTTP_CGI_DEBUG, ("volume config :%d %s %d\n", channel, pcValue[0], paramval));
       sequencer.set_track_relative_vol (channel, paramval);
     }
-    else if (strncmp (pcParam[0], "chan", LWIP_HTTPD_MAX_TAG_NAME_LEN ) == 0)
+    else if (strncmp (pcParam[1], "mch", LWIP_HTTPD_MAX_TAG_NAME_LEN ) == 0)
     {
-      LWIP_DEBUGF(HTTP_CGI_DEBUG, ("midi chan config :%s %d\n", pcValue[0], paramval));
+      LWIP_DEBUGF(HTTP_CGI_DEBUG, ("midi chan config :%d %s %d\n", channel, pcValue[0], paramval));
       sequencer.set_track_midi_channel (channel, paramval);
     }
   }

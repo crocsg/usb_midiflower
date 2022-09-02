@@ -81,11 +81,11 @@
 #define TCPIP_DEBUG                     LWIP_DBG_OFF
 #define DHCP_DEBUG                      LWIP_DBG_OFF
 #define UDP_DEBUG                       LWIP_DBG_OFF
-#define HTTPD_DEBUG         			LWIP_DBG_ON
+#define HTTPD_DEBUG         			LWIP_DBG_OFF
 #define HTTP_DEV_DEBUG         			LWIP_DBG_OFF
 #define HTTP_POST_DEBUG         		LWIP_DBG_OFF
 #define HTTP_SSI_DEBUG         			LWIP_DBG_OFF
-#define HTTP_CGI_DEBUG         			LWIP_DBG_ON
+#define HTTP_CGI_DEBUG         			LWIP_DBG_OFF
 #define TCP_OUTPUT_DEBUG				LWIP_DBG_OFF
 #define MEMP_DEBUG						LWIP_DBG_OFF
 #define MEM_DEBUG                       LWIP_DBG_OFF

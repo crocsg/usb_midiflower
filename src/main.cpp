@@ -73,7 +73,7 @@ void midi_task(void)
     }
 }
 */
-#define PIN PICO_DEFAULT_UART_RX_PIN 
+
 
 int main() {
 
@@ -94,7 +94,7 @@ int main() {
     http_server_init ();
     sleep_ms(100);
 
-    for (int i = 0; i < 100; i++)
+    for (int i = 0; i < 10; i++)
         printf ("yahoo\r\n");
 
     test_crc32 ();        

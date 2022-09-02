@@ -129,7 +129,7 @@ export default class Channels extends React.Component {
             chan[parseInt(event.target.id)].c = event.target.value;
             this.setState ({chan:chan});
 
-          let url = window.url_prefix + '/config/setdata/chan?channel='+ event.target.id + '&chan=' + event.target.value;
+          let url = window.url_prefix + '/config/setdata/chan?channel='+ event.target.id + '&mch=' + event.target.value;
         
           fetch (url).finally(
               () => {
@@ -266,7 +266,7 @@ export default class Channels extends React.Component {
                       </option>
                   ))}
               </Select>
-              <Label htmlFor='chan{index}'>Midi channel)</Label>
+              <Label htmlFor='chan{index}'>Midi channel</Label>
               <Select
                   alignSelf={'center'}
                   
