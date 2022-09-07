@@ -114,4 +114,8 @@ target_link_libraries(usb-midiflower PRIVATE
 pico_enable_stdio_usb(usb-midiflower 0)
 pico_enable_stdio_uart(usb-midiflower 1)
 
+pico_set_linker_script(usb-midiflower ${CMAKE_SOURCE_DIR}/memmap_usb_midiflower.ld)
+
 pico_add_extra_outputs(usb-midiflower)
+
+message (STATUS, ${PICO_TARGET_LINKER_SCRIPT})

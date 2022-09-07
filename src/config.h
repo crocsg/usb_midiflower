@@ -23,39 +23,42 @@
  *
  */
 
-#ifndef __BOARD_H
-#define __BOARD_H
+#ifndef __CONFIG_H
+#define __CONFIG_H
 
-#define GPIO_FLOWER_SENSOR 14
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-    typedef enum
-    {
-        PWM_OUT_1,
-        PWM_OUT_NBR,
-    } gpio_pwm_id;
+#include <stdint.h>
 
-    typedef struct _gpio_pwm
-    {
-        gpio_pwm_id id;
-        uint8_t gpio;
- 
-    } gpio_pwm;
+#define CONFIG_MAGIC        0xee113344
+#define CONFIG_NBCHANNEL    4
 
-    extern gpio_pwm board_pwm[PWM_OUT_NBR];
+typedef struct _config_channel {
+    uint32_t                    size;         // size in notes
+    uint32_t                    bpm_multi;    // bpm multiplier
+    uint32_t                    noteratio;    // sequence fill ratio
+    uint32_t                    vol;          // sequence relative volume
+    uint16_t                    midichannel;  // real midi channel
+} config_channel;
 
-#define DEBUG_UART_ENABLE   1
-#define DEBUG_UART  uart0
-#define DEBUG_UART_BAUDRATE 115200
-#define DEBUG_UART_TX   16
-#define DEBUG_UART_RX   17
-    
+typedef struct _midiflower_config {
+    uint32_t    basebpm;
+    uint8_t     scale;
+    uint32_t    root;
+    config_channel channel[CONFIG_NBCHANNEL];
+
+} midiflower_config;
+
+typedef struct _config {
+    uint32_t            size;
+    uint32_t            magic;
+
+    midiflower_config   midiflower;
+    uint32_t            crc;
+} config;
+
 #ifdef __cplusplus
 }
 #endif
-
-#define SIGNAL_LED 25
-
-#endif // __BOARD_H

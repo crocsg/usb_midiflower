@@ -129,7 +129,7 @@ private:
     
     std::vector<MIDImessage>    m_seq;          // midi notes array
     std::vector<uint8_t>        m_melody;
-    size_t                      m_size;         // size in notes
+    uint32_t                    m_size;         // size in notes
     uint32_t                    m_tempo;        
     uint32_t                    m_bpm_multi;    // bpm multiplier
     uint32_t                    m_bpm;          // base bpm

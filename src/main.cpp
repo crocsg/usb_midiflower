@@ -42,6 +42,7 @@
 extern "C" {
 #endif
 
+extern uint8_t* __storage;
 /*
 void midi_task(void)
 {
@@ -96,7 +97,7 @@ int main() {
 
     for (int i = 0; i < 10; i++)
         printf ("yahoo\r\n");
-
+    printf ("storage %08lx %08lx\n", __storage, (int) &__storage);
     test_crc32 ();        
     setup();
     while (true)
