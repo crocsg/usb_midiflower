@@ -54,7 +54,7 @@ CMidiFlowerSequencer sequencer = CMidiFlowerSequencer(MAX_MIDI_NOTES);
 
 // definition des "pistes" midi du tempo associé et du taux de remplissage max
 // define tracks with associated BPM and fill ratio
-CSequence midi_track_1 = CSequence(128, BASE_BPM, 1, 100, 5);
+CSequence midi_track_1 = CSequence(128, BASE_BPM, 1, 100, 1);
 CSequence midi_track_2 = CSequence(128, BASE_BPM, 1, 75, 2);
 CSequence midi_track_3 = CSequence(128, BASE_BPM, 4, 75, 3);
 CSequence midi_track_4 = CSequence(128, BASE_BPM, 1, 25, 4);
@@ -136,7 +136,7 @@ void flower_music_init (void)
   sequencer.register_track(&midi_track_3);
   sequencer.register_track(&midi_track_4);
   
-  sequencer.set_track_size(0,32);
+  sequencer.set_track_size(0,16);
   sequencer.set_track_mulbpm(0, 2);
   sequencer.set_track_mulbpm(1, 1);
   sequencer.set_track_size(1,64);
