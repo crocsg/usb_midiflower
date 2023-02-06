@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.12)
 
 
-
+set (PROJECT_NAME "usb-midiflower")
 set(PICO_BOARD "pico")
 
 include(pico_sdk_import.cmake)
@@ -79,12 +79,16 @@ set(TINYUSB_LIBNETWORKING_SOURCES
     ${PICO_TINYUSB_PATH}/lib/networking/rndis_reports.c
 )
 
-add_executable(usb-midiflower
+add_executable(${PROJECT_NAME} 
   ${FILES}
   ${TINYUSB_LIBNETWORKING_SOURCES}
   )
 
-target_include_directories(usb-midiflower PRIVATE
+pico_generate_pio_header(${PROJECT_NAME}  
+${CMAKE_CURRENT_LIST_DIR}/src/HARD/WS2812.pio
+)
+
+target_include_directories(${PROJECT_NAME}  PRIVATE
     ${CMAKE_CURRENT_LIST_DIR}/src
     ${CMAKE_CURRENT_LIST_DIR}/src/HAL
     ${CMAKE_CURRENT_LIST_DIR}/src/BOARD
@@ -98,24 +102,27 @@ target_include_directories(usb-midiflower PRIVATE
 
 
 
-target_link_libraries(usb-midiflower PRIVATE
+target_link_libraries(${PROJECT_NAME}  PRIVATE
   pico_stdlib
   hardware_pwm
   hardware_dma
+  hardware_pio
+  pico_multicore
   tinyusb_device
   tinyusb_board
   lwipallapps 
   lwipcore
+
   )
 
-  target_link_options(usb-midiflower PRIVATE 
+  target_link_options(${PROJECT_NAME}  PRIVATE 
   -Xlinker -print-memory-usage
   )
-pico_enable_stdio_usb(usb-midiflower 0)
-pico_enable_stdio_uart(usb-midiflower 1)
+pico_enable_stdio_usb(${PROJECT_NAME}  0)
+pico_enable_stdio_uart(${PROJECT_NAME}  1)
 
-pico_set_linker_script(usb-midiflower ${CMAKE_SOURCE_DIR}/memmap_usb_midiflower.ld)
+pico_set_linker_script(${PROJECT_NAME}  ${CMAKE_SOURCE_DIR}/memmap_usb_midiflower.ld)
 
-pico_add_extra_outputs(usb-midiflower)
+pico_add_extra_outputs(${PROJECT_NAME} )
 
 message (STATUS, ${PICO_TARGET_LINKER_SCRIPT})

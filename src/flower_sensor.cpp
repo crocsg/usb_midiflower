@@ -45,6 +45,7 @@
 static void update_history (uint32_t mestime, uint32_t minim, uint32_t maxim, uint32_t averg, uint32_t delta);
 
 static flower_sensor_callback_mes _setmes;
+static flower_sensor_callback_mes _setlightmes;
 
 
 std::deque<mes_data> history; 
@@ -142,6 +143,10 @@ void flower_sensor_set_callback (flower_sensor_callback_mes clbk)
 {
   _setmes = clbk;
 }
+void flower_sensor_set_light_callback (flower_sensor_callback_mes clbk)
+{
+  _setlightmes = clbk;
+}
 
 void flower_sensor_set_analyse_short (uint8_t s)
 {
@@ -235,7 +240,10 @@ void flower_sensor_analyzeSample(void)
       change = 1;
       threshold_evt ++;
     }
-
+    if (_setlightmes)
+    {
+      _setlightmes (minim, maxim, averg, delta, stdevi, stdevi * threshold);
+    }
     if (change && _setmes)
     {
       //Serial.printf("%ld %ld %ld %ld %f %f\r\n", minim, maxim, averg, delta, stdevi, stdevi * threshold); 

@@ -40,6 +40,7 @@ work about biodata sonification
 
 
 void            BuildNoteFromMeasure (uint32_t currentmillis, uint32_t min, uint32_t max, uint32_t averg, uint32_t delta, float stdevi, float stdevical);
+void            BuildLightFromMeasure (uint32_t currentmillis, uint32_t min, uint32_t max, uint32_t averg, uint32_t delta, float stdevi, float stdevical);
 uint16_t        scaleNote(uint16_t note, uint8_t scale[], uint16_t root);
 void            setNote(uint32_t currentMillis, int value, int velocity, int duration, int ramp);
 void            ControlMusic (void);

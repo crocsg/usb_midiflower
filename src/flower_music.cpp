@@ -28,9 +28,15 @@ work about biodata sonification
 */
 
 #include "flower_music.h"
+
+#include <pico/util/queue.h>
+#include <pico/multicore.h>
 #include "flower_sensor.h"
 #include "./MIDI/sequence.h"
 #include "./TOOLS/utils.h"
+#include "./HARD/WS2812.hpp"
+#include "./BOARD/board.h"
+#include "flower_activity.h"
 
 uint32_t last_sample_check = millis ();
 
@@ -127,6 +133,43 @@ static uint8_t noteMax = 84+12;   //C6  - keyboard note maximum
 
 static uint32_t basebpm   = BASE_BPM;
 
+queue_t lightqueue;
+
+
+extern "C"
+{
+  void light_task(void)
+  {
+      WS2812 ledStrip(
+        WS2812_LED_PIN,            // Data line is connected to pin 0. (GP0)
+        WS2812_LED_LENGTH,         // Strip is 6 LEDs long.
+        pio0,               // Use PIO 0 for creating the state machine.
+        0,                  // Index of the state machine that will be created for controlling the LED strip
+                            // You can have 4 state machines per PIO-Block up to 8 overall.
+                            // See Chapter 3 in: https://datasheets.raspberrypi.org/rp2040/rp2040-datasheet.pdf
+        WS2812::FORMAT_GRB  // Pixel format used by the LED strip
+    );
+    ledStrip.fill( WS2812::RGB(255, 0, 0) );
+    ledStrip.show();
+    sleep_ms(500);
+    ledStrip.setPixelColor(0, WS2812::RGB(255, 255, 0));
+    ledStrip.setPixelColor(1, WS2812::RGB(0, 255, 255));
+
+    while (true)
+    {
+      uint16_t data;
+      if (queue_try_remove(&lightqueue, &data))
+      {
+        ledStrip.shift_right (2);
+        ledStrip.setPixelColor(0, WS2812::gamma32(WS2812::ColorHSV(data)));
+        ledStrip.setPixelColor(1, WS2812::gamma32(WS2812::ColorHSV(data)));
+      }
+     
+      ledStrip.show ();
+      sleep_ms(5);
+    }
+  }
+}
 
 void flower_music_init (void)
 {
@@ -146,7 +189,13 @@ void flower_music_init (void)
   
 
   sequencer.set_track_ratio(0, 100);
-  
+  queue_init 	( 	&lightqueue,
+		sizeof(uint16_t),
+		1 
+	);		
+
+  multicore_reset_core1();
+  multicore_launch_core1(light_task);
 
 }
 
@@ -166,10 +215,30 @@ void BuildNoteFromMeasure (uint32_t currentmillis, uint32_t min, uint32_t max, u
     //set scaling, root key, note
     uint16_t note = map(averg % 127,0,127,noteMin,noteMax);    //derive note from average measure
     //note = scaleNote(note, scaleSelect, root);          //scale the note (force the note in selected scale)
+    uint16_t hue = (uint16_t) (averg % 65536);
+    //hue = 4096;
+    queue_try_add (&lightqueue, &hue);
     
     setNote(currentmillis, note, 100, dur, ramp);                            // add the note in some sequencer channels
 }
 
+// Flower sensor measure callback. compute a note and pass it to midi sequencer
+// min    min value
+// max    max value
+// averg  average
+// delta  max - min
+// stdevi standard deviation
+// stdevical standard deviation * threshold
+void BuildLightFromMeasure (uint32_t currentmillis, uint32_t min, uint32_t max, uint32_t averg, uint32_t delta, float stdevi, float stdevical)
+{
+    
+    //note = scaleNote(note, scaleSelect, root);          //scale the note (force the note in selected scale)
+    uint16_t hue = (uint16_t) (averg % 65536);
+    //hue = 4096;
+    queue_try_add (&lightqueue, &hue);
+    
+    
+}
 
 
 

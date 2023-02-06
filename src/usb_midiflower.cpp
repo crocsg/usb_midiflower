@@ -48,7 +48,7 @@ extern CMidiFlowerSequencer sequencer;
 
 
 void flowersensor_measure (uint32_t min, uint32_t max, uint32_t averg, uint32_t delta, float stdevi, float stdevical);
-
+void flowersensor_lightmeasure (uint32_t min, uint32_t max, uint32_t averg, uint32_t delta, float stdevi, float stdevical);
 
 
 #ifdef __cplusplus
@@ -66,6 +66,7 @@ void setup(void)
   flower_sensor_set_analyse_short(1);
 
   flower_sensor_set_callback (flowersensor_measure);
+  flower_sensor_set_light_callback (flowersensor_lightmeasure);
 
   // enable sequencer
   sequencer.setLock(false);
@@ -100,6 +101,7 @@ void loop(void)
 #endif
 
 static uint16_t pwmvalue = 0;
+
 // Flower sensor measure callback. receive flower measures 
 // min    min value
 // max    max value
@@ -117,5 +119,26 @@ void flowersensor_measure (uint32_t min, uint32_t max, uint32_t averg, uint32_t 
 
     // give all the measure to flower music generation code
     BuildNoteFromMeasure (millis(), min, max, averg, delta, stdevi, stdevical);
+
+    // 
 }
+
+// Flower sensor measure callback. receive flower measures 
+// min    min value
+// max    max value
+// averg  average
+// delta  max - min
+// stdevi standard deviation
+// stdevical standard deviation * threshold
+void flowersensor_lightmeasure (uint32_t min, uint32_t max, uint32_t averg, uint32_t delta, float stdevi, float stdevical)
+{
+    //Serial.println ("measures received \n");
+        
+
+    // give all the measure to flower music generation code
+    BuildLightFromMeasure (millis(), min, max, averg, delta, stdevi, stdevical);
+
+    // 
+}
+
 
