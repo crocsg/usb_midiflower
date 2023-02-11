@@ -233,7 +233,7 @@ void BuildLightFromMeasure (uint32_t currentmillis, uint32_t min, uint32_t max, 
 {
     
     //note = scaleNote(note, scaleSelect, root);          //scale the note (force the note in selected scale)
-    uint16_t hue = (uint16_t) (averg % 65536);
+    uint16_t hue = (uint16_t) ((averg % 64) * 1024);
     //hue = 4096;
     queue_try_add (&lightqueue, &hue);
     
