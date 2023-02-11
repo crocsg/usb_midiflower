@@ -161,8 +161,8 @@ extern "C"
       if (queue_try_remove(&lightqueue, &data))
       {
         ledStrip.shift_right (2);
-        ledStrip.setPixelColor(0, WS2812::gamma32(WS2812::ColorHSV(data)));
-        ledStrip.setPixelColor(1, WS2812::gamma32(WS2812::ColorHSV(data)));
+        ledStrip.setPixelColor(0, WS2812::gamma32(WS2812::ColorHSV((data % 2048) * 32)));
+        ledStrip.setPixelColor(1, WS2812::gamma32(WS2812::ColorHSV((data % 2048) * 32)));
       }
      
       ledStrip.show ();
@@ -215,9 +215,6 @@ void BuildNoteFromMeasure (uint32_t currentmillis, uint32_t min, uint32_t max, u
     //set scaling, root key, note
     uint16_t note = map(averg % 127,0,127,noteMin,noteMax);    //derive note from average measure
     //note = scaleNote(note, scaleSelect, root);          //scale the note (force the note in selected scale)
-    uint16_t hue = (uint16_t) (averg % 65536);
-    //hue = 4096;
-    queue_try_add (&lightqueue, &hue);
     
     setNote(currentmillis, note, 100, dur, ramp);                            // add the note in some sequencer channels
 }

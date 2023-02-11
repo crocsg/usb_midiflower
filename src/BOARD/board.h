@@ -28,7 +28,7 @@
 
 #define GPIO_FLOWER_SENSOR 14
 #define WS2812_LED_PIN     0
-#define WS2812_LED_LENGTH  96
+#define WS2812_LED_LENGTH  128
 
 
 #ifdef __cplusplus
